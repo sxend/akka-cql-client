@@ -15,4 +15,35 @@ public class Header {
         this.streamId = streamId;
         this.opcode = opcode;
     }
+
+    public static class Builder {
+        public Version version;
+        public byte flags;
+        public short streamId;
+        public Opcode opcode;
+
+        public Builder version(Version v) {
+            this.version = v;
+            return this;
+        }
+
+        public Builder flags(byte f) {
+            this.flags = f;
+            return this;
+        }
+
+        public Builder streamId(short s) {
+            this.streamId = s;
+            return this;
+        }
+
+        public Builder opcode(Opcode o) {
+            this.opcode = o;
+            return this;
+        }
+
+        public Header build() {
+            return new Header(this.version, this.flags, this.streamId, this.opcode);
+        }
+    }
 }

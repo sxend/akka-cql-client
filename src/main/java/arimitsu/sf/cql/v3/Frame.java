@@ -13,15 +13,9 @@ public class Frame {
     public Frame(ByteBuffer byteBuffer) {
         byte version = byteBuffer.get();
         byte flags = byteBuffer.get();
-//        int streamId = byteBuffer.getShort();
-//        streamId = (streamId << 8) + (byteBuffer.get() & 0xff);
-//        if(streamId < 0 || streamId > 32768)
         short streamId = byteBuffer.getShort();
         byte opcode = byteBuffer.get();
         int length = byteBuffer.getInt();
-//        length = (length << 8) + (0xff & byteBuffer.get());
-//        length = (length << 8) + (0xff & byteBuffer.get());
-//        length = (length << 8) + (0xff & byteBuffer.get());
         byte[] body = new byte[length];
         byteBuffer.get(body);
         this.header = new Header(Version.valueOf(version), flags, streamId, Opcode.valueOf(opcode));
@@ -29,10 +23,45 @@ public class Frame {
         this.body = body;
     }
 
-    public Frame(Version version, byte flags, short streamId, Opcode opcode, byte[] body) {
-        this.header = new Header(version, flags, streamId, opcode);
+    public Frame(Header header, byte[] body) {
+        this.header = header;
         this.length = body.length;
         this.body = body;
+    }
+
+    public static class Builder {
+        public Header.Builder headerBuilder = new Header.Builder();
+        public byte[] body;
+
+        public Builder version(Version v) {
+            this.headerBuilder = headerBuilder.version(v);
+            return this;
+        }
+
+        public Builder flags(byte f) {
+            this.headerBuilder = headerBuilder.flags(f);
+            return this;
+        }
+
+        public Builder streamId(short s) {
+            this.headerBuilder = headerBuilder.streamId(s);
+            return this;
+        }
+
+        public Builder opcode(Opcode o) {
+            this.headerBuilder = headerBuilder.opcode(o);
+            return this;
+        }
+
+        public Builder body(byte[] b) {
+            this.body = b;
+            return this;
+        }
+
+        public Frame build() {
+            return new Frame(this.headerBuilder.build(), this.body);
+        }
+
     }
 
     public ByteBuffer toByteBuffer() {
@@ -40,13 +69,13 @@ public class Frame {
         byte[] headerBytes = new byte[9];
         headerBytes[0] = this.header.version.value;
         headerBytes[1] = this.header.flags;
-        headerBytes[2] = (byte) (0xff & (this.header.streamId >>> 8));
-        headerBytes[3] = (byte) (0xff & (this.header.streamId));
+        headerBytes[2] = (byte) (this.header.streamId >>> 8);
+        headerBytes[3] = (byte) (0xff & this.header.streamId);
         headerBytes[4] = this.header.opcode.value;
-        headerBytes[5] = (byte) (0xff & (this.length >>> 24));
+        headerBytes[5] = (byte) (this.length >>> 24);
         headerBytes[6] = (byte) (0xff & (this.length >>> 16));
         headerBytes[7] = (byte) (0xff & (this.length >>> 8));
-        headerBytes[8] = (byte) (0xff & (this.length));
+        headerBytes[8] = (byte) (0xff & this.length);
         byteBuffer.put(headerBytes);
         byteBuffer.put(this.body);
         return byteBuffer;
