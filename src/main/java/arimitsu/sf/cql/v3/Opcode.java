@@ -7,6 +7,7 @@ public enum Opcode {
     ERROR((byte) 0x00),
     //req
     STARTUP((byte) 0x01),
+    OPTIONS((byte) 0x05),
     QUERY((byte) 0x07),
     AUTH_RESPONSE((byte) 0x0F),
     PREPARE((byte) 0x09),
@@ -15,9 +16,8 @@ public enum Opcode {
     REGISTER((byte) 0x0B),
     //res
     READY((byte) 0x02),
-    RESULT((byte) 0x08),
     AUTHENTICATE((byte) 0x03),
-    OPTIONS((byte) 0x05),
+    RESULT((byte) 0x08),
     SUPPORTED((byte) 0x06),
     AUTH_CHALLENGE((byte) 0x0E),
     AUTH_SUCCESS((byte) 0x10),
@@ -41,6 +41,8 @@ public enum Opcode {
     }
 
     public static class REQ_OP {
+
+        public static final Opcode OPTIONS = Opcode.OPTIONS;
         public static final Opcode STARTUP = Opcode.STARTUP;
         public static final Opcode QUERY = Opcode.QUERY;
         public static final Opcode AUTH_RESPONSE = Opcode.AUTH_RESPONSE;
@@ -55,7 +57,6 @@ public enum Opcode {
         public static final Opcode ERROR = Opcode.ERROR;
         public static final Opcode READY = Opcode.READY;
         public static final Opcode AUTHENTICATE = Opcode.AUTHENTICATE;
-        public static final Opcode OPTIONS = Opcode.OPTIONS;
         public static final Opcode SUPPORTED = Opcode.SUPPORTED;
         public static final Opcode RESULT = Opcode.RESULT;
         public static final Opcode EVENT = Opcode.EVENT;

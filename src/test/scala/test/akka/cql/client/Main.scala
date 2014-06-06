@@ -1,16 +1,10 @@
 package test.akka.cql.client
 
-import akka.actor.{Actor, Props, ActorSystem}
-import akka.io.{IO, Tcp}
-import akka.io.Tcp._
+import akka.actor.{Props, ActorSystem}
 import java.net.InetSocketAddress
-import akka.util.ByteString
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Received
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
-import akka.io.Tcp.CommandFailed
-import akka.io.Tcp.Bind
+import arimitsu.sf.akka.cqlclient.{CqlActor, Configuration, CqlClient}
+import arimitsu.sf.akka.cqlclient.events.{Event, EventCallback}
+import scala.concurrent.ExecutionContext
 
 /**
  * Created by sxend on 14/05/31.
@@ -18,65 +12,16 @@ import akka.io.Tcp.Bind
 object Main {
   def main(args: Array[String]): Unit = {
 
-    {
-      implicit val serverSystem = ActorSystem("serverSystem")
-      IO(Tcp) ! Bind(serverSystem.actorOf(Props[Server]), new InetSocketAddress("localhost", 2000))
+    implicit val serverSystem = ActorSystem("serverSystem")
+    val configuration = Configuration(Seq(new InetSocketAddress("127.0.0.1", 9042)), 10)
+    val client = CqlClient(configuration)
+    Thread.sleep(1000L)
+    val f = client.options()
+
+    import serverSystem.dispatcher
+    f.onComplete{
+      _ => println("end")
     }
-
-
-    {
-      Client.run()
-
-    }
-
   }
 }
 
-class Server extends Actor {
-
-
-  override def receive: Receive = {
-
-    case CommandFailed(_: Bind) => context stop self
-
-    case c@Connected(remote, local) =>
-
-      val connection = sender()
-      val handler = context.actorOf(Props[Handler])
-      connection ! Register(handler)
-
-  }
-
-
-}
-
-class Handler extends Actor {
-  override def receive: Actor.Receive = {
-    case Received(data) =>
-      println("server -> " + data)
-  }
-}
-
-object Client {
-  def run() = {
-
-    implicit val clientSystem = ActorSystem("clientSystem")
-    val manager = IO(Tcp)
-    manager ! Connect(new InetSocketAddress("localhost", 2000))
-  }
-}
-
-class Client extends Actor {
-
-  override def receive: Receive = {
-    case c@Connected(remote, local) =>
-      println("connected")
-      val connection = sender()
-      connection ! Register(self)
-      context become {
-        case Received(data) =>
-          println()
-          connection ! Write(ByteString("hoge"))
-      }
-  }
-}

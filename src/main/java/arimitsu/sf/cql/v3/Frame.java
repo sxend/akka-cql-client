@@ -25,8 +25,8 @@ public class Frame {
 
     public Frame(Header header, byte[] body) {
         this.header = header;
-        this.length = body.length;
         this.body = body;
+        this.length = body != null ? body.length : 0;
     }
 
     public static class Builder {
@@ -77,7 +77,9 @@ public class Frame {
         headerBytes[7] = (byte) (0xff & (this.length >>> 8));
         headerBytes[8] = (byte) (0xff & this.length);
         byteBuffer.put(headerBytes);
-        byteBuffer.put(this.body);
+        if (this.body != null) {
+            byteBuffer.put(this.body);
+        }
         return byteBuffer;
     }
 

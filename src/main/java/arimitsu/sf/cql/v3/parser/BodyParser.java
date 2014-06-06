@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3;
+package arimitsu.sf.cql.v3.parser;
 
 /**
  * Created by sxend on 2014/06/05.
