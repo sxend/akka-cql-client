@@ -7,7 +7,7 @@ import akka.io.{Tcp, IO}
 import akka.io.Tcp._
 import arimitsu.sf.akka.cqlclient.message.EventHandler
 import arimitsu.sf.cql.v3._
-import arimitsu.sf.cql.v3.messages.CassandraEvent
+import arimitsu.sf.cql.v3.messages.Event
 import akka.util.ByteString
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Received
@@ -68,7 +68,7 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
             case AUTH_SUCCESS =>
             case EVENT =>
               if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
-              eventHandler.handle(CassandraEvent(frame))
+              eventHandler.handle(Event(frame))
           }
       }
     case message: Message => self ! message

@@ -7,8 +7,8 @@ import arimitsu.sf.cql.v3.util.Notation
 /**
  * Created by sxend on 14/06/07.
  */
-object CassandraEvent {
-  def apply(frame: Frame): CassandraEvent = {
+object Event {
+  def apply(frame: Frame): Event = {
     val eventType = Notation.getString(frame.body.get)
     eventType match {
       case TOPOLOGY_CHANGE.name => ???
@@ -19,9 +19,9 @@ object CassandraEvent {
   }
 }
 
-sealed abstract class CassandraEvent(val name: String)
+sealed abstract class Event(val name: String)
 
-case object TOPOLOGY_CHANGE extends CassandraEvent("TOPOLOGY_CHANGE") {
+case object TOPOLOGY_CHANGE extends Event("TOPOLOGY_CHANGE") {
 
   case class NEW_NODE(inet: InetSocketAddress)
 
@@ -29,7 +29,7 @@ case object TOPOLOGY_CHANGE extends CassandraEvent("TOPOLOGY_CHANGE") {
 
 }
 
-case object STATUS_CHANGE extends CassandraEvent("STATUS_CHANGE") {
+case object STATUS_CHANGE extends Event("STATUS_CHANGE") {
 
   case class UP(inet: InetSocketAddress)
 
@@ -37,7 +37,7 @@ case object STATUS_CHANGE extends CassandraEvent("STATUS_CHANGE") {
 
 }
 
-case object SCHEMA_CHANGE extends CassandraEvent("SCHEMA_CHANGE") {
+case object SCHEMA_CHANGE extends Event("SCHEMA_CHANGE") {
 
   sealed abstract class ChangeType(name: String)
 
