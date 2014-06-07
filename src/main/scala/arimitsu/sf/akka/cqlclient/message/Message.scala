@@ -8,5 +8,5 @@ import arimitsu.sf.cql.v3.Frame
 trait Message {
   def apply(frame: Frame): Unit
 
-  def error(e: arimitsu.sf.cql.v3.message.Error): Unit
+  def error(e: arimitsu.sf.cql.v3.messages.Error): Unit
 }

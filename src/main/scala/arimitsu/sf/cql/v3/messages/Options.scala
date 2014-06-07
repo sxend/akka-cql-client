@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3.message
+package arimitsu.sf.cql.v3.messages
 
 import arimitsu.sf.cql.v3.{Header, Frame, Opcode, Version}
 

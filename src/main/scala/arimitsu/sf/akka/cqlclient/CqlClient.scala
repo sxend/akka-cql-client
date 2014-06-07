@@ -4,7 +4,7 @@ import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.concurrent.{Promise, Future}
 import arimitsu.sf.akka.cqlclient.message.Options
 import arimitsu.sf.akka.cqlclient.events.EventCallback
-import arimitsu.sf.cql.v3.message.Supported
+import arimitsu.sf.cql.v3.messages.Supported
 
 /**
  * Created by sxend on 14/05/31.

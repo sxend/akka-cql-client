@@ -1,15 +1,15 @@
-package arimitsu.sf.cql.v3.message
+package arimitsu.sf.cql.v3.messages
 
 
-import arimitsu.sf.cql.v3.util.BufferUtil
+import arimitsu.sf.cql.v3.util.Notation
 import java.nio.ByteBuffer
 
 /**
  * Created by sxend on 14/06/07.
  */
 object SupportedParser extends ResponseParser[Supported] {
-  override def parse(body: ByteBuffer): Supported = {
-    val map = BufferUtil.parseStringMultimap(body)
+  override def parse(implicit body: ByteBuffer): Supported = {
+    val map = Notation.getStringMultiMap
     Supported(map)
   }
 }

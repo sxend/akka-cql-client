@@ -1,16 +1,16 @@
-package arimitsu.sf.cql.v3.message
+package arimitsu.sf.cql.v3.messages
 
 import java.nio.ByteBuffer
-import arimitsu.sf.cql.v3.util.BufferUtil
+import arimitsu.sf.cql.v3.util.Notation
 
 
 /**
  * Created by sxend on 14/06/07.
  */
 object ErrorParser extends ResponseParser[Error] {
-  override def parse(body: ByteBuffer): Error = {
+  override def parse(implicit body: ByteBuffer): Error = {
     val ec = body.getInt
-    Error(ErrorCodes.valueOf(ec), BufferUtil.toString(body))
+    Error(ErrorCodes.valueOf(ec), Notation.getString(body, (body.limit() - body.position()).toShort))
   }
 }
 

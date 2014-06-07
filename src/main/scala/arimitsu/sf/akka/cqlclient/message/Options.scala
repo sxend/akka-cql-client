@@ -2,7 +2,7 @@ package arimitsu.sf.akka.cqlclient.message
 
 import scala.concurrent.Promise
 import arimitsu.sf.cql.v3.Frame
-import arimitsu.sf.cql.v3.message.{SupportedParser, Error, Supported}
+import arimitsu.sf.cql.v3.messages.{SupportedParser, Error, Supported}
 
 /**
  * Created by sxend on 2014/06/06.

@@ -46,7 +46,7 @@ class CqlActor(configuration: Configuration, eventCallback: EventCallback) exten
       context.become {
         case option@Options(promise) =>
           send(option, (streamId) =>
-            arimitsu.sf.cql.v3.message.Options(streamId, Flags.NONE.value).toFrame.toByteBuffer
+            arimitsu.sf.cql.v3.messages.Options(streamId, Flags.NONE.value).toFrame.toByteBuffer
           )
         case Received(data) =>
           val frame = Frame(data.toByteBuffer)
@@ -55,7 +55,7 @@ class CqlActor(configuration: Configuration, eventCallback: EventCallback) exten
           frame.header.opcode match {
             case ERROR =>
               val op = operationMap.remove(frame.header.streamId)
-              val e = arimitsu.sf.cql.v3.message.ErrorParser.parse(frame.body.get)
+              val e = arimitsu.sf.cql.v3.messages.ErrorParser.parse(frame.body.get)
               op.get.error(e)
             case READY =>
             case AUTHENTICATE =>

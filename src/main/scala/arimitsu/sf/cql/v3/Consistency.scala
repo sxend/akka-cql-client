@@ -29,4 +29,21 @@ object Consistency {
 
   case object LOCAL_ONE extends Consistency(0x000A)
 
+  val values = Seq(
+    ANY,
+    ONE,
+    TWO,
+    THREE,
+    QUORUM,
+    ALL,
+    LOCAL_QUORUM,
+    EACH_QUORUM,
+    SERIAL,
+    LOCAL_SERIAL,
+    LOCAL_ONE
+  )
+
+  def valueOf(value: Short): Consistency = {
+    values.find(_.value == value).get
+  }
 }
