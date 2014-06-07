@@ -1,13 +1,12 @@
 package arimitsu.sf.cql.v3
 
-;
-
 /**
  * Created by sxend on 14/06/04.
  */
+sealed abstract class Flags(val value: Byte)
+
 object Flags {
 
-  sealed abstract class Flags(val value: Byte)
 
   case object NONE extends Flags(0x00)
 

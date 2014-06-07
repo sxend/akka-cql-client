@@ -1,13 +1,11 @@
 package arimitsu.sf.cql.v3
 
-;
-
 /**
  * Created by sxend on 14/06/04.
  */
-object Consistency {
+sealed abstract class Consistency(val value: Short)
 
-  sealed abstract class Consistency(val value: Short)
+object Consistency {
 
   case object ANY extends Consistency(0x0000)
 

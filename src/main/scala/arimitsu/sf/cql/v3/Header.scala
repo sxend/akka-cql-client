@@ -1,7 +1,5 @@
 package arimitsu.sf.cql.v3
 
-import arimitsu.sf.cql.v3.Version.Version
-import arimitsu.sf.cql.v3.Opcode.Opcode
 
 /**
  * Created by sxend on 14/06/04.

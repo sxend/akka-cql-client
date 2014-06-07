@@ -1,10 +1,9 @@
 package arimitsu.sf.cql.v3
 
-;
-
 /**
  * Created by sxend on 14/06/04.
  */
+sealed abstract class Version(val value: Byte)
 
 object Version {
 
@@ -16,9 +15,6 @@ object Version {
 
   def valueOf(value: Byte) = {
     values.find(ver => ver.value == value).get
-  }
-
-  sealed abstract class Version(val value: Byte) {
   }
 
 }

@@ -1,7 +1,6 @@
 package arimitsu.sf.cql.v3.message
 
 import java.nio.ByteBuffer
-import arimitsu.sf.cql.v3.message.ErrorCodes.ErrorCodes
 import arimitsu.sf.cql.v3.util.BufferUtil
 
 
@@ -17,9 +16,10 @@ object ErrorParser extends ResponseParser[Error] {
 
 case class Error(errorCode: ErrorCodes, errorMessage: String)
 
+sealed abstract class ErrorCodes(val code: Int)
+
 object ErrorCodes {
 
-  sealed abstract class ErrorCodes(val code: Int)
 
   case object SERVER_ERROR extends ErrorCodes(0x0000)
 

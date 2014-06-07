@@ -1,8 +1,6 @@
 package arimitsu.sf.cql.v3
 
-;
-
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer
 
 /**
  * Created by sxend on 14/06/04.

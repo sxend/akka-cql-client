@@ -1,13 +1,11 @@
 package arimitsu.sf.cql.v3
 
-;
-
 /**
  * Created by sxend on 14/06/04.
  */
-object Opcode {
+sealed abstract class Opcode(val value: Byte)
 
-  sealed abstract class Opcode(val value: Byte) {}
+object Opcode {
 
   case object ERROR extends Opcode(0x00)
 

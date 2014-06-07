@@ -3,8 +3,6 @@ package arimitsu.sf.cql.v3.message
 
 import arimitsu.sf.cql.v3.util.BufferUtil
 import java.nio.ByteBuffer
-;
-
 
 /**
  * Created by sxend on 14/06/07.
