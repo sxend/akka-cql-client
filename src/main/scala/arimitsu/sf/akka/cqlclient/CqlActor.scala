@@ -5,8 +5,9 @@ import java.util.concurrent.atomic.AtomicReference
 import arimitsu.sf.akka.cqlclient.message.{Message, Options}
 import akka.io.{Tcp, IO}
 import akka.io.Tcp._
-import arimitsu.sf.akka.cqlclient.events.EventCallback
+import arimitsu.sf.akka.cqlclient.message.EventHandler
 import arimitsu.sf.cql.v3._
+import arimitsu.sf.cql.v3.messages.CassandraEvent
 import akka.util.ByteString
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Received
@@ -18,7 +19,7 @@ import java.nio.ByteBuffer
 /**
  * Created by sxend on 2014/06/06.
  */
-class CqlActor(configuration: Configuration, eventCallback: EventCallback) extends Actor {
+class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends Actor {
 
   import context.system
 
@@ -66,7 +67,8 @@ class CqlActor(configuration: Configuration, eventCallback: EventCallback) exten
             case AUTH_CHALLENGE =>
             case AUTH_SUCCESS =>
             case EVENT =>
-
+              if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
+              eventHandler.handle(CassandraEvent(frame))
           }
       }
     case message: Message => self ! message

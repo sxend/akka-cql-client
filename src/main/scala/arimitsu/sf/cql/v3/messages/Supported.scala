@@ -8,9 +8,8 @@ import java.nio.ByteBuffer
  * Created by sxend on 14/06/07.
  */
 object SupportedParser extends ResponseParser[Supported] {
-  override def parse(implicit body: ByteBuffer): Supported = {
-    val map = Notation.getStringMultiMap
-    Supported(map)
+  override def parse(body: ByteBuffer): Supported = {
+    Supported(Notation.getStringMultiMap(body))
   }
 }
 
