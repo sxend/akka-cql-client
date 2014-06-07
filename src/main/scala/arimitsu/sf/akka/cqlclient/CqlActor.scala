@@ -1,76 +1,75 @@
 package arimitsu.sf.akka.cqlclient
 
-import akka.actor.{ActorRef, Actor}
+import akka.actor.Actor
 import java.util.concurrent.atomic.AtomicReference
-import arimitsu.sf.akka.cqlclient.message.Options
+import arimitsu.sf.akka.cqlclient.message.{Message, Options}
 import akka.io.{Tcp, IO}
 import akka.io.Tcp._
 import arimitsu.sf.akka.cqlclient.events.EventCallback
-import arimitsu.sf.cql.v3.{Flags, Version, Opcode, Frame}
+import arimitsu.sf.cql.v3._
 import akka.util.ByteString
-import arimitsu.sf.cql.v3.Frame.Builder
-import arimitsu.sf.akka.cqlclient.Configuration
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Received
+import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
-import arimitsu.sf.akka.cqlclient.message.Options
+import akka.io.Tcp.CommandFailed
+import java.nio.ByteBuffer
 
 /**
  * Created by sxend on 2014/06/06.
  */
 class CqlActor(configuration: Configuration, eventCallback: EventCallback) extends Actor {
-  import context.system
-  IO(Tcp) ! Connect(configuration.clusterAddress(0))
-  val connection: AtomicReference[ActorRef] = new AtomicReference[ActorRef]()
 
-  implicit def byteString2Frame(bs: ByteString): Frame = new Frame(bs.asByteBuffer)
+  import context.system
+
+  IO(Tcp) ! Connect(configuration.clusterAddress(0))
+  val operationMap = scala.collection.mutable.HashMap[Int, Message]()
 
   override def receive = {
     case CommandFailed(c: Connect) =>
-      println("failed")
-      println(c)
       sender() ! "connect failed"
       context stop self
     case c@Connected(remote, local) =>
-      println("c")
-      val conn = sender()
-      conn ! Register(self)
-      connection.set(conn)
-      context.become{
-        case option@Options(promise) =>
-          println("option")
-          val frame = new Builder()
-            .version(Version.REQUEST)
-            .flags(Flags.NONE.value)
-            .streamId(1.toShort)
-            .opcode(Opcode.OPTIONS).build()
-          frame.toByteBuffer.array().foreach(print)
-          println()
-          conn ! Write(ByteString(frame.toByteBuffer))
-        case Received(data) =>
-          println("received")
-          println(data)
-        case a:Any => println("a"+a)
-        case _ => println("???")
+      val connection = sender()
+      connection ! Register(self)
+      val streamReference: AtomicReference[Short] = new AtomicReference[Short](0.toShort)
+      def send(message: Message, process: (Short) => ByteBuffer) = {
+        val streamId: Short = streamReference.get()
+        val result = streamReference.compareAndSet(streamId, (streamId + 1).toShort)
+        if (result) {
+          operationMap.put(streamId, message)
+          connection ! Write(ByteString(process(streamId)))
+        } else {
+          self ! message
+        }
       }
-//      println()
-//      val conn = sender()
-//      connection.set(conn)
-//      val frame = new Builder()
-//        .version(Version.REQUEST)
-//        .flags(Flags.NONE.value)
-//        .streamId(1.toShort)
-//        .opcode(Opcode.OPTIONS).build()
-//      frame.toByteBuffer.array().foreach(print)
-//      println()
-//      connection.get() ! Write(ByteString(frame.toByteBuffer))
-//      println(connection.get())
-//      context.become {
-//        case Received(data) =>
-//          println("become")
-//          val frame: Frame = data
-//
-//      }
+      context.become {
+        case option@Options(promise) =>
+          send(option, (streamId) =>
+            arimitsu.sf.cql.v3.message.Options(streamId, Flags.NONE.value).toFrame.toByteBuffer
+          )
+        case Received(data) =>
+          val frame = Frame(data.toByteBuffer)
+          import Opcode._
 
+          frame.header.opcode match {
+            case ERROR =>
+              val op = operationMap.remove(frame.header.streamId)
+              val e = arimitsu.sf.cql.v3.message.ErrorParser.parse(frame.body.get)
+              op.get.error(e)
+            case READY =>
+            case AUTHENTICATE =>
+            case RESULT =>
+            case SUPPORTED =>
+              val op = operationMap.remove(frame.header.streamId)
+              op.get.apply(frame)
+            case AUTH_CHALLENGE =>
+            case AUTH_SUCCESS =>
+            case EVENT =>
+
+          }
+      }
+    case message: Message => self ! message
   }
+
 }
