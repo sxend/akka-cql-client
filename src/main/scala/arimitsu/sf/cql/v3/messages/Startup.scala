@@ -10,7 +10,7 @@ import scala.Some
  */
 case class Startup(streamId: Short, flags: Byte, compression: Option[Compression]) extends Request {
   val default = Map(
-    "CQL_VERSION" -> "3.1.7"
+    "CQL_VERSION" -> "3.0.0"
   )
 
   override def toFrame: Frame = {
