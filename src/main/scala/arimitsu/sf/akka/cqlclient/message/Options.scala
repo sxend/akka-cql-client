@@ -15,6 +15,6 @@ case class Options(promise: Promise[Supported]) extends Message {
   }
 
   override def error(e: Error): Unit = {
-    promise.failure(new RuntimeException(e.errorCode + ": " + e.errorMessage))
+    promise.failure(e.toThrowable)
   }
 }

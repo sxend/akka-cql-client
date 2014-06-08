@@ -104,4 +104,24 @@ object Notation {
     }.toMap
   }
 
+  def toStringMap(maps: Map[String, String]): Array[Byte] = {
+    Array.concat(short2Bytes(maps.size.toShort),
+      maps.map {
+        v => Array.concat(toString(v._1), toString(v._2))
+      }.foldLeft(Array.empty[Byte]) {
+        (a, b) => Array.concat(a, b)
+      })
+  }
+
+  def toString(str: String): Array[Byte] = {
+    val bytes = str.getBytes("UTF-8")
+    Array.concat(short2Bytes(bytes.length.toShort), bytes)
+  }
+
+  def short2Bytes(s: Short): Array[Byte] = {
+    val bytes = new Array[Byte](2)
+    bytes.update(0, (0xff & (s >> 8)).toByte)
+    bytes.update(1, (0xff & s).toByte)
+    bytes
+  }
 }

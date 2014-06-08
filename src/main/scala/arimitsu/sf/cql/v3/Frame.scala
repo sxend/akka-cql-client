@@ -12,11 +12,12 @@ object Frame {
     val streamId = byteBuffer.getShort
     val opcode = byteBuffer.get()
     val header = new Header(Version.valueOf(version), flags, streamId, Opcode.valueOf(opcode))
-    Frame(header, Option(byteBuffer))
+    val length = byteBuffer.getInt
+    Frame(header, length ,Option(byteBuffer))
   }
 
-  def apply(header: Header, body: Option[ByteBuffer]): Frame = {
-    new Frame(header, body.fold(0)(b => b.getInt), body)
+  def apply(header: Header,length:Int, body: Option[ByteBuffer]): Frame = {
+    new Frame(header, length, body)
   }
 }
 
@@ -34,7 +35,13 @@ class Frame(val header: Header, val length: Int, val body: Option[ByteBuffer]) {
     headerBytes.update(7, (0xff & (this.length >>> 8)).toByte)
     headerBytes.update(8, (0xff & this.length).toByte)
     byteBuffer.put(headerBytes)
-    body.map(byteBuffer.put)
+    body match{
+      case Some(buf) =>
+        val arr = new Array[Byte](length)
+        buf.get(arr)
+        byteBuffer.put(arr)
+      case None =>
+    }
     byteBuffer.flip()
     byteBuffer
   }

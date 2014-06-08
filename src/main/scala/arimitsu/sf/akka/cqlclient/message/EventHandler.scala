@@ -2,7 +2,7 @@ package arimitsu.sf.akka.cqlclient.message
 
 import akka.actor.ActorSystem
 import arimitsu.sf.akka.cqlclient.Configuration
-import arimitsu.sf.cql.v3.messages.{SCHEMA_CHANGE, STATUS_CHANGE, TOPOLOGY_CHANGE, Event}
+import arimitsu.sf.cql.v3.messages.{TopologyChange, SchemaChange, StatusChange, Event}
 
 /**
  * Created by sxend on 2014/06/06.
@@ -11,8 +11,8 @@ class EventHandler(configuration: Configuration)(implicit actorSystem: ActorSyst
   type Handle = PartialFunction[Event, Unit]
 
   def handle: Handle = {
-    case TOPOLOGY_CHANGE =>
-    case STATUS_CHANGE =>
-    case SCHEMA_CHANGE =>
+    case TopologyChange(_,_) => ???
+    case StatusChange(_,_) => ???
+    case SchemaChange(_,_) => ???
   }
 }

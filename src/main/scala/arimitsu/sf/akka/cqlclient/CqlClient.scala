@@ -3,8 +3,10 @@ package arimitsu.sf.akka.cqlclient
 import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.concurrent.{Promise, Future}
 import arimitsu.sf.akka.cqlclient.message.Options
+import arimitsu.sf.akka.cqlclient.message.Startup
 import arimitsu.sf.akka.cqlclient.message.EventHandler
-import arimitsu.sf.cql.v3.messages.Supported
+import arimitsu.sf.cql.v3.messages.{Authenticate, Ready, Supported}
+import arimitsu.sf.cql.v3.Compression
 
 /**
  * Created by sxend on 14/05/31.
@@ -22,5 +24,11 @@ class CqlClient(cqlActor: ActorRef, eventHandler: EventHandler) {
     val options = Options(Promise[Supported]())
     cqlActor ! options
     options.promise.future
+  }
+
+  def startup(compression: Option[Compression]): Future[Either[Authenticate, Ready]] = {
+    val startup = Startup(compression,Promise[Either[Authenticate, Ready]]())
+    cqlActor ! startup
+    startup.promise.future
   }
 }

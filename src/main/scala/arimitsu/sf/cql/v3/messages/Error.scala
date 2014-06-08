@@ -14,7 +14,9 @@ object ErrorParser extends ResponseParser[Error] {
   }
 }
 
-case class Error(errorCode: ErrorCodes, errorMessage: String)
+case class Error(errorCode: ErrorCodes, errorMessage: String){
+  def toThrowable = new RuntimeException(errorCode + ": " + errorMessage)
+}
 
 sealed abstract class ErrorCodes(val code: Int)
 

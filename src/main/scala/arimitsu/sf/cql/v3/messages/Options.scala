@@ -7,6 +7,6 @@ import arimitsu.sf.cql.v3.{Header, Frame, Opcode, Version}
  */
 case class Options(streamId: Short, flags: Byte) extends Request {
   def toFrame: Frame = {
-    Frame(Header(Version.REQUEST, flags, streamId, Opcode.OPTIONS), None)
+    Frame(Header(Version.REQUEST, flags, streamId, Opcode.OPTIONS), 0, None)
   }
 }
