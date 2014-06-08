@@ -61,13 +61,6 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
             case ERROR =>
               frame.header.streamId match {
                 case 0 =>
-                  println(frame.header.version)
-                  println(frame.header.flags)
-                  println(frame.header.streamId)
-                  println(frame.length)
-                  println(Notation.getInt(frame.body.get))
-                  println(Notation.getString(frame.body.get).replace(":","\n"))
-                  println("oh...")
                 case _ =>
                   val op = operationMap.remove(frame.header.streamId)
                   op.get.error(arimitsu.sf.cql.v3.messages.ErrorParser.parse(frame.body.get))
