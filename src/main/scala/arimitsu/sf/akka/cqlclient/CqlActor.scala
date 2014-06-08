@@ -60,7 +60,7 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
           frame.header.opcode match {
             case ERROR =>
               frame.header.streamId match {
-                case 0 =>
+                case 0 => // received stack trace
                 case _ =>
                   val op = operationMap.remove(frame.header.streamId)
                   op.get.error(arimitsu.sf.cql.v3.messages.ErrorParser.parse(frame.body.get))
