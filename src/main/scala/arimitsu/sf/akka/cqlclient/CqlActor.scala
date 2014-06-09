@@ -51,7 +51,7 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
           )
         case startup@Startup(_, _) =>
           send(startup, (streamId) =>
-            new arimitsu.sf.cql.v3.messages.Startup(streamId, Flags.NONE, startup.compression.get).toFrame.toByteBuffer
+            new arimitsu.sf.cql.v3.messages.Startup(streamId, Flags.NONE, startup.compression.getOrElse(null)).toFrame.toByteBuffer
           )
         case Received(data) =>
           val frame = new Frame(data.toByteBuffer)

@@ -23,7 +23,7 @@ public class Startup implements Request {
 
     @Override
     public Frame toFrame() {
-        if (!compression.equals(Compression.NONE)) {
+        if (compression != null && !Compression.NONE.equals(compression)) {
             parameters.put(Compression.KEY, compression.name);
         }
         byte[] body = Notation.toStringMap(parameters);

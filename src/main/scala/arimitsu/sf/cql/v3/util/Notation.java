@@ -122,20 +122,21 @@ public class Notation {
     }
 
     public static byte[] toStringMap(Map<String, String> maps) {
+        byte[] mapLength = short2Bytes((short) maps.size());
+        byte[] result = new byte[0];
         for (Map.Entry<String, String> entry : maps.entrySet()) {
-//            toString(entry.getKey())
+            result = join(result, join(toString(entry.getKey()), toString(entry.getValue())));
         }
-//    Array.concat(short2Bytes(maps.size.toShort),
-//      maps.map {
-//        v => Array.concat(toString(v._1), toString(v._2))
-//      }.foldLeft(Array.empty[Byte]) {
-//        (a, b) => Array.concat(a, b)
-//      })
-        return null;
+        return join(mapLength, result);
     }
 
-    public static byte[] toString(String str) throws Throwable {
-        byte[] bytes = str.getBytes("UTF-8");
+    public static byte[] toString(String str) {
+        byte[] bytes;
+        try {
+            bytes = str.getBytes("UTF-8");
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
         int length = bytes.length;
         byte[] resultBytes = new byte[2 + length];
         resultBytes[0] = (byte) (0xff & (length >> 8));
@@ -149,5 +150,12 @@ public class Notation {
         bytes[0] = (byte) (0xff & (s >> 8));
         bytes[1] = (byte) (0xff & s);
         return bytes;
+    }
+
+    static byte[] join(byte[] byte1, byte[] byte2) {
+        byte[] resultBytes = new byte[byte1.length + byte2.length];
+        System.arraycopy(byte1, 0, resultBytes, 0, byte1.length);
+        System.arraycopy(byte2, 0, resultBytes, byte1.length, byte2.length);
+        return resultBytes;
     }
 }
