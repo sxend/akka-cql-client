@@ -20,7 +20,7 @@ public enum Consistency {
     Consistency(int level) {
         this.level = (short) level;
     }
-    public Consistency valueOf(short level){
+    public static Consistency valueOf(short level){
         for(Consistency c:values()){
             if(c.level == level) return c;
         }

@@ -20,7 +20,7 @@ object Main {
     import serverSystem.dispatcher
     f.onComplete {
       case Success(s) =>
-        println(s.parameters)
+        println(s.stringMultiMap)
         val startupFuture = client.startup(None)
         startupFuture.onComplete{
           case Success(st) =>

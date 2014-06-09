@@ -47,14 +47,14 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
       context.become {
         case option@Options(_) =>
           send(option, (streamId) =>
-            arimitsu.sf.cql.v3.messages.Options(streamId, Flags.NONE.value).toFrame.toByteBuffer
+            new arimitsu.sf.cql.v3.messages.Options(streamId, Flags.NONE).toFrame.toByteBuffer
           )
         case startup@Startup(_, _) =>
           send(startup, (streamId) =>
-            arimitsu.sf.cql.v3.messages.Startup(streamId, Flags.NONE.value, startup.compression).toFrame.toByteBuffer
+            new arimitsu.sf.cql.v3.messages.Startup(streamId, Flags.NONE, startup.compression.get).toFrame.toByteBuffer
           )
         case Received(data) =>
-          val frame = Frame(data.toByteBuffer)
+          val frame = new Frame(data.toByteBuffer)
           import Opcode._
 
           frame.header.opcode match {
@@ -63,7 +63,7 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
                 case 0 => // received stack trace
                 case _ =>
                   val op = operationMap.remove(frame.header.streamId)
-                  op.get.error(arimitsu.sf.cql.v3.messages.ErrorParser.parse(frame.body.get))
+                  op.get.error(arimitsu.sf.cql.v3.messages.Error.ErrorParser.parse(frame.body))
               }
             case READY =>
               val op = operationMap.remove(frame.header.streamId)
@@ -84,8 +84,8 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
               val op = operationMap.remove(frame.header.streamId)
               op.get.apply(frame)
             case EVENT =>
-              if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
-              eventHandler.handle(Event(frame))
+//              if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
+//              eventHandler.handle(new Event(frame))
             case _ =>
           }
       }

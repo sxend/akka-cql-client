@@ -7,7 +7,7 @@ package arimitsu.sf.cql.v3;
 public class Header {
     public final Version version;
     public final Flags flags;
-    public final Short streamId;
+    public final short streamId;
     public final Opcode opcode;
 
     public Header(Version version, Flags flags, Short streamId, Opcode opcode) {

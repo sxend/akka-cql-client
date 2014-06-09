@@ -13,8 +13,8 @@ import arimitsu.sf.cql.v3.messages.Authenticate
 case class Startup(compression: Option[Compression],promise: Promise[Either[Authenticate, Ready]]) extends Message {
   override def apply(frame: Frame): Unit = {
     val result = frame.header.opcode match {
-      case Opcode.READY => Right(ReadyParser.parse(frame.body.get))
-      case Opcode.AUTHENTICATE => Left(AuthenticateParser.parse(frame.body.get))
+      case Opcode.READY => Right(Ready.ReadyParser.parse(frame.body))
+      case Opcode.AUTHENTICATE => Left(Authenticate.AuthenticateParser.parse(frame.body))
     }
     promise.success(result)
   }
