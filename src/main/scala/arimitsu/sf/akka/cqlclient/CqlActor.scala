@@ -17,11 +17,11 @@ import scala.collection.JavaConversions._
 /**
  * Created by sxend on 2014/06/06.
  */
-class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends Actor {
+class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extends Actor {
 
   import context.system
 
-  IO(Tcp) ! Connect(configuration.clusterAddress(0))
+  IO(Tcp) ! Connect(nodeConfig.nodeAddress)
 
   override def receive = {
     case CommandFailed(c: Connect) =>
@@ -31,7 +31,7 @@ class CqlActor(configuration: Configuration, eventHandler: EventHandler) extends
       val connection = sender()
       connection ! Register(self)
       val streamReference: AtomicReference[Short] = new AtomicReference[Short](1.toShort)
-      val compression: Compression = Compression.valueOf(configuration.compression.getBytes)
+      val compression: Compression = Compression.valueOf(nodeConfig.compression.getBytes)
       val operationMap = scala.collection.mutable.HashMap[Short, Message]()
       def send(message: Message, process: (Short) => ByteBuffer) = {
         val streamId: Short = streamReference.get()

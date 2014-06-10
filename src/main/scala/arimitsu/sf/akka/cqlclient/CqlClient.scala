@@ -6,28 +6,44 @@ import arimitsu.sf.akka.cqlclient.message.Options
 import arimitsu.sf.akka.cqlclient.message.Startup
 import arimitsu.sf.akka.cqlclient.message.EventHandler
 import arimitsu.sf.cql.v3.messages.{Authenticate, Ready, Supported}
-import arimitsu.sf.cql.v3.Flags
 
 /**
  * Created by sxend on 14/05/31.
  */
-object CqlClient {
-  def apply(configuration: Configuration)(implicit actorSystem: ActorSystem): CqlClient = {
-    val callback = new EventHandler(configuration)
-    val cqlActor = actorSystem.actorOf(Props(classOf[CqlActor], configuration, callback))
-    new CqlClient(configuration, cqlActor, callback)
+object Cluster {
+  def apply(clusterConfig: Configuration)(implicit actorSystem: ActorSystem): Cluster = {
+    val callback = new EventHandler(clusterConfig)
+    val cluster = Iterator.continually(clusterConfig.clusterAddress.flatMap {
+      node => (0 until clusterConfig.connectionPerHost).map {
+        i => {
+          val nodeConfig = NodeConfiguration(node, clusterConfig.flags, clusterConfig.compression)
+          val cqlActor = actorSystem.actorOf(Props(classOf[CqlActor], nodeConfig, callback))
+          new CqlClient(nodeConfig, cqlActor, callback)
+        }
+      }
+    }).flatten
+    new Cluster(cluster)
   }
 }
 
-class CqlClient(configuration: Configuration, cqlActor: ActorRef, eventHandler: EventHandler) {
+class Cluster(cluster: Iterator[CqlClient])(implicit actorSystem: ActorSystem) {
+
+  def runWith[A](action: CqlClient => A ): A = {
+    action(cluster.next())
+  }
+
+  def client: CqlClient = cluster.next()
+}
+
+class CqlClient(nodeConfig: NodeConfiguration, cqlActor: ActorRef, eventHandler: EventHandler) {
   def options(): Future[Supported] = {
-    val options = Options(configuration.flags, Promise[Supported]())
+    val options = Options(nodeConfig.flags, Promise[Supported]())
     cqlActor ! options
     options.promise.future
   }
 
-  def startup(options:Map[String,String]): Future[Either[Authenticate, Ready]] = {
-    val startup = Startup(configuration.flags, options, Promise[Either[Authenticate, Ready]]())
+  def startup(options: Map[String, String]): Future[Either[Authenticate, Ready]] = {
+    val startup = Startup(nodeConfig.flags, options, Promise[Either[Authenticate, Ready]]())
     cqlActor ! startup
     startup.promise.future
   }
