@@ -21,14 +21,6 @@ public class Notation {
         }
     }
 
-    public static int getInt(ByteBuffer buffer) {
-        return buffer.getInt();
-    }
-
-    public static long getLong(ByteBuffer buffer) {
-        return buffer.getLong();
-    }
-
     public static short getShort(ByteBuffer buffer) {
         return buffer.getShort();
     }
@@ -44,8 +36,7 @@ public class Notation {
     }
 
     public static String getLongString(ByteBuffer buffer) {
-        int length = getInt(buffer);
-        return getString(buffer, length);
+        return getString(buffer, buffer.getInt());
     }
 
     public static UUID getUUID(ByteBuffer buffer) {
@@ -63,13 +54,11 @@ public class Notation {
     }
 
     public static byte[] getBytes(ByteBuffer buffer) {
-        int length = getInt(buffer);
-        return getBytes(buffer, length);
+        return getBytes(buffer, buffer.getInt());
     }
 
     public static byte[] getShortBytes(ByteBuffer buffer) {
-        int length = getShort(buffer);
-        return getBytes(buffer, length);
+        return getBytes(buffer, buffer.getShort());
     }
 
     public static byte[] getBytes(ByteBuffer buffer, int length) {
@@ -98,7 +87,7 @@ public class Notation {
     public static InetSocketAddress getINet(ByteBuffer buffer) {
         byte[] addrArea = new byte[buffer.get()];
         buffer.get(addrArea);
-        return InetSocketAddress.createUnresolved(new String(addrArea), getInt(buffer));
+        return InetSocketAddress.createUnresolved(new String(addrArea), buffer.getInt());
     }
 
     public static Consistency getConsistency(ByteBuffer buffer) {
@@ -138,11 +127,7 @@ public class Notation {
             throw new RuntimeException(t);
         }
         int length = bytes.length;
-        byte[] resultBytes = new byte[2 + length];
-        resultBytes[0] = (byte) (0xff & (length >> 8));
-        resultBytes[1] = (byte) (0xff & length);
-        System.arraycopy(bytes, 0, resultBytes, 2, bytes.length);
-        return resultBytes;
+        return join(short2Bytes((short) length), bytes);
     }
 
     public static byte[] short2Bytes(short s) {

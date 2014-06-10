@@ -17,7 +17,7 @@ public class Options implements Request {
 
     @Override
     public Frame toFrame() {
-        return new Frame(new Header(Version.REQUEST, this.flags, this.streamId, Opcode.OPTIONS), 0, null);
+        return new Frame(new Header(Version.REQUEST, this.flags, this.streamId, Opcode.OPTIONS), null);
     }
 
 }
