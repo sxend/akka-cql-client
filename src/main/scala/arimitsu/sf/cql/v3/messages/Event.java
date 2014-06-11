@@ -1,14 +1,9 @@
 package arimitsu.sf.cql.v3.messages;
 
-import java.net.InetSocketAddress;
-import arimitsu.sf.cql.v3.Frame;
-import arimitsu.sf.cql.v3.util.Notation;
-import java.nio.ByteBuffer;
-
 /**
  * Created by sxend on 14/06/07.
  */
-public enum Event{
+public enum Event {
     TOPOLOGY_CHANGE,
     STATUS_CHANGE,
     SCHEMA_CHANGE

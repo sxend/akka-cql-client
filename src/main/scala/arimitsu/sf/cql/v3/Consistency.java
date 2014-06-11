@@ -20,9 +20,10 @@ public enum Consistency {
     Consistency(int level) {
         this.level = (short) level;
     }
-    public static Consistency valueOf(short level){
-        for(Consistency c:values()){
-            if(c.level == level) return c;
+
+    public static Consistency valueOf(short level) {
+        for (Consistency c : values()) {
+            if (c.level == level) return c;
         }
         throw new RuntimeException("invalid level");
     }

@@ -28,7 +28,7 @@ object Cluster {
 
 class Cluster(cluster: Iterator[CqlClient])(implicit actorSystem: ActorSystem) {
 
-  def runWith[A](action: CqlClient => A ): A = {
+  def runWith[A](action: CqlClient => A): A = {
     action(cluster.next())
   }
 
@@ -37,13 +37,13 @@ class Cluster(cluster: Iterator[CqlClient])(implicit actorSystem: ActorSystem) {
 
 class CqlClient(nodeConfig: NodeConfiguration, cqlActor: ActorRef, eventHandler: EventHandler) {
   def options(): Future[Supported] = {
-    val options = Options(nodeConfig.flags, Promise[Supported]())
+    val options = Options(Promise[Supported]())
     cqlActor ! options
     options.promise.future
   }
 
   def startup(options: Map[String, String]): Future[Either[Authenticate, Ready]] = {
-    val startup = Startup(nodeConfig.flags, options, Promise[Either[Authenticate, Ready]]())
+    val startup = Startup(options, Promise[Either[Authenticate, Ready]]())
     cqlActor ! startup
     startup.promise.future
   }

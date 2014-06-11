@@ -1,7 +1,6 @@
 package arimitsu.sf.cql.v3.messages;
 
 
-
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
@@ -21,6 +20,7 @@ public class Supported {
     public Supported(Map<String, List<String>> stringMultiMap) {
         this.stringMultiMap = stringMultiMap;
     }
+
     public static final ResponseParser<Supported> SupportedParser = new ResponseParser<Supported>() {
         @Override
         public Supported parse(ByteBuffer body) {

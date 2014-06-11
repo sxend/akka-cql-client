@@ -14,6 +14,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import java.nio.ByteBuffer
 import scala.collection.JavaConversions._
+
 /**
  * Created by sxend on 2014/06/06.
  */
@@ -32,8 +33,8 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
       connection ! Register(self)
       val streamReference: AtomicReference[Short] = new AtomicReference[Short](1.toShort)
       val compression: Compression = Compression.valueOf(nodeConfig.compression.getBytes)
-      val operationMap = scala.collection.mutable.HashMap[Short, Message]()
-      def send(message: Message, process: (Short) => ByteBuffer) = {
+      val operationMap = scala.collection.mutable.HashMap[Short, Message[_]]()
+      def sendMessage(message: Message[_], process: (Short) => ByteBuffer) = {
         val streamId: Short = streamReference.get()
         val result = streamReference.compareAndSet(streamId, (streamId + 1).toShort)
         if (result) {
@@ -44,13 +45,13 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
         }
       }
       context.become {
-        case option@Options(_, _) =>
-          send(option, (streamId) =>
-            new arimitsu.sf.cql.v3.messages.Options(streamId, option.flags).toFrame.toByteBuffer(compression.compressor)
+        case option: Options =>
+          sendMessage(option, (streamId) =>
+            new arimitsu.sf.cql.v3.messages.Options(streamId, nodeConfig.flags).toFrame.toByteBuffer(compression.compressor)
           )
-        case startup@Startup(_, _, _) =>
-          send(startup, (streamId) =>
-            new arimitsu.sf.cql.v3.messages.Startup(streamId, startup.flags, startup.options).toFrame.toByteBuffer(Compression.NONE.compressor)
+        case startup: Startup =>
+          sendMessage(startup, (streamId) =>
+            new arimitsu.sf.cql.v3.messages.Startup(streamId, nodeConfig.flags, startup.options).toFrame.toByteBuffer(Compression.NONE.compressor)
           )
         case Received(data) =>
           val frame = new Frame(data.toByteBuffer, compression.compressor)
@@ -63,31 +64,32 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
                   val op = operationMap.remove(frame.header.streamId)
                   op.get.error(arimitsu.sf.cql.v3.messages.Error.ErrorParser.parse(ByteBuffer.wrap(frame.body)))
               }
-            case AUTHENTICATE =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
-            case READY =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
-            case RESULT =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
-            case SUPPORTED =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
-            case AUTH_CHALLENGE =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
-            case AUTH_SUCCESS =>
-              val op = operationMap.remove(frame.header.streamId)
-              op.get.apply(frame)
+            //            case AUTHENTICATE =>
+            //              val op = operationMap.remove(frame.header.streamId)
+            //              op.get.process(frame)
+            //            case READY =>
+            //              val op = operationMap.remove(frame.header.streamId)
+            //              op.get.process(frame)
+            //            case RESULT =>
+            //              val op = operationMap.remove(frame.header.streamId)
+            //              op.get.process(frame)
+            //            case SUPPORTED =>
+            //              val op = operationMap.remove(frame.header.streamId)
+            //              op.get.process(frame)
+            //            case AUTH_CHALLENGE =>
+            //              val op = operationMap.remove(frame.header.streamId)
+            //              op.get.process(frame)
+            //            case AUTH_SUCCESS =>
+            //              val op =
+            //              op.get.process(frame)
             case EVENT =>
-            //              if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
+              if (frame.header.streamId >= 0) throw new RuntimeException("protocol error.")
             //              eventHandler.handle(new Event(frame))
             case _ =>
+              operationMap.remove(frame.header.streamId).get.process(frame)
           }
       }
-    case message: Message => self ! message
+    case message: Message[_] => self ! message
   }
 
 }

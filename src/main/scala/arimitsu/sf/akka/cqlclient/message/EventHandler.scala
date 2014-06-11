@@ -11,9 +11,9 @@ class EventHandler(config: Configuration)(implicit actorSystem: ActorSystem) {
   type Handle = PartialFunction[Event, Unit]
 
   def handle: Handle = {
-//    case (_,_) => ???
-//    case StatusChange(_,_) => ???
-//    case SchemaChange(_,_) => ???
+    //    case (_,_) => ???
+    //    case StatusChange(_,_) => ???
+    //    case SchemaChange(_,_) => ???
     ???
   }
 }

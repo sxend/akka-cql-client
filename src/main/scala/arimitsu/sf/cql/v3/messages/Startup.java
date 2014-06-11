@@ -3,8 +3,6 @@ package arimitsu.sf.cql.v3.messages;
 import arimitsu.sf.cql.v3.*;
 import arimitsu.sf.cql.v3.util.Notation;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,9 +14,9 @@ public class Startup implements Request {
     public static final String OPTION_COMPRESSION = "COMPRESSION";
     public final short streamId;
     public final Flags flags;
-    public final Map<String,String> options;
+    public final Map<String, String> options;
 
-    public Startup(short streamId, Flags flags, Map<String,String> options) {
+    public Startup(short streamId, Flags flags, Map<String, String> options) {
         this.streamId = streamId;
         this.flags = flags;
         this.options = options;

@@ -60,7 +60,7 @@ public class Frame {
         headerBytes[7] = (byte) (0xff & (length >>> 8));
         headerBytes[8] = (byte) (0xff & length);
         byteBuffer.put(headerBytes);
-        if(bytes != null) byteBuffer.put(bytes);
+        if (bytes != null) byteBuffer.put(bytes);
         byteBuffer.flip();
         return byteBuffer;
     }

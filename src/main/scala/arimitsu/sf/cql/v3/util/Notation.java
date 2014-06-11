@@ -29,7 +29,10 @@ public class Notation {
         return getString(buffer, buffer.getShort());
     }
 
+    public static final String EMPTY = "";
+
     public static String getString(ByteBuffer buffer, int length) {
+        if (length <= 0) return EMPTY;
         byte[] bytes = new byte[length];
         buffer.get(bytes);
         return new String(bytes);
