@@ -14,6 +14,11 @@ public enum Compression {
 
     NONE("", new Compressor() {
         @Override
+        public int getCommpressedLength(byte[] bytes) {
+            return bytes.length;
+        }
+
+        @Override
         public byte[] compress(byte[] bytes) {
             return bytes;
         }
@@ -25,16 +30,20 @@ public enum Compression {
     }),
     LZ4("lz4", new Compressor() {
         @Override
+        public int getCommpressedLength(byte[] bytes) {
+            return bytes.length - 4;
+        }
+
+        @Override
         public byte[] compress(byte[] bytes) {
-            System.out.println("compress");
             int length = bytes.length;
             LZ4Factory factory = LZ4Factory.fastestInstance();
             LZ4Compressor compressor = factory.fastCompressor();
             int maxLength = compressor.maxCompressedLength(length);
             byte[] compressed = new byte[maxLength + 4];
-            compressed[0] = (byte) (length >>> 24);
-            compressed[1] = (byte) (0xff & (length >>> 16));
-            compressed[2] = (byte) (0xff & (length >>> 8));
+            compressed[0] = (byte) (0xff &(length >> 24));
+            compressed[1] = (byte) (0xff & (length >> 16));
+            compressed[2] = (byte) (0xff & (length >> 8));
             compressed[3] = (byte) (0xff & length);
             compressor.compress(bytes, 0, length, compressed, 4, maxLength);
             return compressed;
@@ -54,6 +63,11 @@ public enum Compression {
         }
     }),
     SNAPPY("snappy", new Compressor() {
+        @Override
+        public int getCommpressedLength(byte[] bytes) {
+            return bytes.length;
+        }
+
         @Override
         public byte[] compress(byte[] bytes) {
             try {
@@ -91,6 +105,7 @@ public enum Compression {
     }
 
     public static interface Compressor {
+        public int getCommpressedLength(byte[] bytes);
         public byte[] compress(byte[] bytes);
 
         public byte[] decompress(byte[] bytes);

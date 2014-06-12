@@ -37,6 +37,7 @@ public class Rows implements Result {
                     Notation.getBytes(body);
                 }
             }
+            System.out.println("row");
             return null;
         }
     };

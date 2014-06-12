@@ -121,7 +121,15 @@ public class Notation {
         }
         return join(mapLength, result);
     }
-
+    public static byte[] toLongString(String str){
+        byte[] bytes;
+        try {
+            bytes = str.getBytes("UTF-8");
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+        return join(int2Bytes(bytes.length), bytes);
+    }
     public static byte[] toString(String str) {
         byte[] bytes;
         try {
@@ -135,12 +143,32 @@ public class Notation {
 
     public static byte[] short2Bytes(short s) {
         byte[] bytes = new byte[2];
-        bytes[0] = (byte) (0xff & (s >> 8));
+        bytes[0] = (byte) (0xff & (s >>> 8));
         bytes[1] = (byte) (0xff & s);
         return bytes;
     }
+    public static byte[] int2Bytes(int s) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (0xff & (s >>> 24));
+        bytes[1] = (byte) (0xff & (s >>> 16));
+        bytes[2] = (byte) (0xff & (s >>> 8));
+        bytes[3] = (byte) (0xff & s);
+        return bytes;
+    }
+    public static byte[] long2Bytes(long s) {
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) (0xff & (s >>> 56));
+        bytes[1] = (byte) (0xff & (s >>> 48));
+        bytes[2] = (byte) (0xff & (s >>> 40));
+        bytes[3] = (byte) (0xff & (s >>> 32));
+        bytes[4] = (byte) (0xff & (s >>> 24));
+        bytes[5] = (byte) (0xff & (s >>> 16));
+        bytes[6] = (byte) (0xff & (s >>> 8));
+        bytes[7] = (byte) (0xff & s);
+        return bytes;
+    }
 
-    static byte[] join(byte[] byte1, byte[] byte2) {
+    public static byte[] join(byte[] byte1, byte[] byte2) {
         byte[] resultBytes = new byte[byte1.length + byte2.length];
         System.arraycopy(byte1, 0, resultBytes, 0, byte1.length);
         System.arraycopy(byte2, 0, resultBytes, byte1.length, byte2.length);

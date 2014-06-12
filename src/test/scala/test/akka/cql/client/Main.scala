@@ -6,7 +6,8 @@ import arimitsu.sf.akka.cqlclient.{Cluster, Configuration}
 import scala.util.Success
 import scala.util.Failure
 import arimitsu.sf.cql.v3.Flags
-import arimitsu.sf.cql.v3.messages.Startup
+import arimitsu.sf.cql.v3.messages.{Query, QueryParameters, Startup}
+import arimitsu.sf.cql.v3.messages.QueryParameters.ListValues
 
 /**
  * Created by sxend on 14/05/31.
@@ -35,6 +36,12 @@ object Main {
                     println(a.className)
                   case Right(r) =>
                     println(r)
+                    import arimitsu.sf.cql.v3.Consistency._
+                    val f = client.query("select 1",new QueryParameters(ALL,Query.QueryFlags.VALUES.mask,new ListValues(),1,new Array[Byte](1),ALL,System.currentTimeMillis()))
+                    f.onComplete{
+                      case Success(row) => println(row)
+                      case Failure(fail) => fail.printStackTrace()
+                    }
                   case _ => println("other")
                 }
               case Failure(t) => t.printStackTrace()

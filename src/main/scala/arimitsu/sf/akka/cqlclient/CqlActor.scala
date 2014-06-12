@@ -2,7 +2,7 @@ package arimitsu.sf.akka.cqlclient
 
 import akka.actor.Actor
 import java.util.concurrent.atomic.AtomicReference
-import arimitsu.sf.akka.cqlclient.message.{Startup, Message, Options, EventHandler}
+import arimitsu.sf.akka.cqlclient.message._
 import akka.io.{Tcp, IO}
 import akka.io.Tcp._
 import arimitsu.sf.cql.v3._
@@ -14,6 +14,15 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import java.nio.ByteBuffer
 import scala.collection.JavaConversions._
+import arimitsu.sf.akka.cqlclient.message.Startup
+import akka.io.Tcp.Connected
+import arimitsu.sf.akka.cqlclient.NodeConfiguration
+import akka.io.Tcp.Received
+import akka.io.Tcp.Register
+import akka.io.Tcp.Connect
+import arimitsu.sf.akka.cqlclient.message.Message
+import akka.io.Tcp.CommandFailed
+import arimitsu.sf.akka.cqlclient.message.Options
 
 /**
  * Created by sxend on 2014/06/06.
@@ -53,13 +62,17 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
           sendMessage(startup, (streamId) =>
             new arimitsu.sf.cql.v3.messages.Startup(streamId, nodeConfig.flags, startup.options).toFrame.toByteBuffer(Compression.NONE.compressor)
           )
+        case query: Query =>
+          sendMessage(query, (streamId) =>
+            new arimitsu.sf.cql.v3.messages.Query(streamId,nodeConfig.flags,query.string,query.parameter).toFrame.toByteBuffer(compression.compressor)
+          )
         case Received(data) =>
           val frame = new Frame(data.toByteBuffer, compression.compressor)
           import Opcode._
           frame.header.opcode match {
             case ERROR =>
               frame.header.streamId match {
-                case 0 => // received stack trace
+                case 0 => println(new String(frame.body))
                 case _ =>
                   val op = operationMap.remove(frame.header.streamId)
                   op.get.error(arimitsu.sf.cql.v3.messages.Error.ErrorParser.parse(ByteBuffer.wrap(frame.body)))

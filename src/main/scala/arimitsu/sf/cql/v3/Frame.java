@@ -44,11 +44,11 @@ public class Frame {
                 case COMPRESSION:
                 case BOTH:
                     bytes = compressor.compress(this.body);
-                    length = bytes.length;
+                    length = compressor.getCommpressedLength(bytes);
                     break;
             }
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocate(9 + length);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(9 + (bytes != null ? bytes.length : 0));
         byte[] headerBytes = new byte[9];
         headerBytes[0] = header.version.number;
         headerBytes[1] = header.flags.value;
@@ -61,7 +61,10 @@ public class Frame {
         headerBytes[8] = (byte) (0xff & length);
         byteBuffer.put(headerBytes);
         if (bytes != null) byteBuffer.put(bytes);
+        System.out.println(length);
+        System.out.println(bytes != null ? bytes.length : 0);
         byteBuffer.flip();
+        System.out.println(byteBuffer.limit() - byteBuffer.position());
         return byteBuffer;
     }
 }

@@ -2,10 +2,8 @@ package arimitsu.sf.akka.cqlclient
 
 import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.concurrent.{Promise, Future}
-import arimitsu.sf.akka.cqlclient.message.Options
-import arimitsu.sf.akka.cqlclient.message.Startup
-import arimitsu.sf.akka.cqlclient.message.EventHandler
-import arimitsu.sf.cql.v3.messages.{Authenticate, Ready, Supported}
+import arimitsu.sf.akka.cqlclient.message.{EventHandler, Startup, Query, Options}
+import arimitsu.sf.cql.v3.messages.{QueryParameters, Ready, Authenticate, Supported, Result}
 
 /**
  * Created by sxend on 14/05/31.
@@ -46,5 +44,10 @@ class CqlClient(nodeConfig: NodeConfiguration, cqlActor: ActorRef, eventHandler:
     val startup = Startup(options, Promise[Either[Authenticate, Ready]]())
     cqlActor ! startup
     startup.promise.future
+  }
+  def query(string:String, parameter:QueryParameters):Future[Result] = {
+    val query = Query(string,parameter,Promise[Result]())
+    cqlActor ! query
+    query.promise.future
   }
 }

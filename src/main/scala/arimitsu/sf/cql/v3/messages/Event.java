@@ -10,7 +10,7 @@ public enum Event {
 }
 //object Event {
 //  def apply(frame: Frame): Event = {
-//    val buffer = frame.body.get
+//    val buffer = frame.values.get
 //    val eventType = Notation.getString(buffer)
 //    eventType match {
 //      case TopologyChange.NAME => TopologyChange(buffer)
