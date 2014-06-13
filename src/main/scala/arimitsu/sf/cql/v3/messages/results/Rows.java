@@ -1,5 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
+
 import arimitsu.sf.cql.v3.messages.Metadata;
 import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
@@ -11,11 +12,11 @@ import java.nio.ByteBuffer;
  */
 public class Rows implements Result {
     // <metadata><rows_count><rows_content>
-    public final Object metadata;
-    public final Object rowsCount;
+    public final Metadata metadata;
+    public final int rowsCount;
     public final Object rowsContent;
 
-    public Rows(Object metadata, Object rowsCount, Object rowsContent) {
+    public Rows(Metadata metadata, int rowsCount, Object rowsContent) {
         this.metadata = metadata;
         this.rowsCount = rowsCount;
         this.rowsContent = rowsContent;
@@ -23,22 +24,21 @@ public class Rows implements Result {
 
     @Override
     public Kind getKind() {
-        return Kind.ROWS;
+        return Result.Kind.ROWS;
     }
 
-    private static final Metadata.MetadataParser metadataParser= new Metadata.MetadataParser();
+    private static final Metadata.MetadataParser metadataParser = new Metadata.MetadataParser();
     public static final ResultParser<Rows> PARSER = new ResultParser<Rows>() {
         @Override
         public Rows parse(ByteBuffer body) {
             Metadata metadata = metadataParser.parse(body);
-            int rowsCount =body.getInt();
-            for(int i =0;i<rowsCount;i++){
-                for(int j =0;j< metadata.columnsCount;j++){
-                    Notation.getBytes(body);
+            int rowsCount = body.getInt();
+            for (int i = 0; i < rowsCount; i++) {
+                for (int j = 0; j < metadata.columnsCount; j++) {
+                    byte[] b = Notation.getBytes(body);
                 }
             }
-            System.out.println("row");
-            return null;
+            return new Rows(metadata, rowsCount, null);
         }
     };
 }

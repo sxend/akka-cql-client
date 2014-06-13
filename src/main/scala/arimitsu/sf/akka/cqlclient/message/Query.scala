@@ -8,7 +8,7 @@ import java.nio.ByteBuffer
 /**
  * Created by sxend on 2014/06/10.
  */
-case class Query(string: String,parameter:QueryParameters, promise: Promise[Result]) extends Message(promise) {
+case class Query(string: String, parameter: QueryParameters, promise: Promise[Result]) extends Message(promise) {
   override def process(frame: Frame): Unit = {
     val result = Result.Parser.parse(ByteBuffer.wrap(frame.body))
     promise.success(result)

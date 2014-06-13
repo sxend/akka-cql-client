@@ -3,7 +3,8 @@ package arimitsu.sf.cql.v3.messages;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by sxend on 14/06/11.
@@ -48,30 +49,37 @@ public class Metadata {
             int count = buffer.getInt();
             boolean hasPagingState = (MetadataFlags.HAS_MORE_PAGES.mask & flags) > 0;
             boolean hasGlobalSetting = (MetadataFlags.GLOBAL_TABLES_SPEC.mask & flags) > 0;
+            boolean hasntMetadata = (MetadataFlags.NO_METADATA.mask & flags) > 0;
             byte[] pagingState = null;
             if (hasPagingState) {
                 pagingState = Notation.getBytes(buffer);
             }
             Set<Object> set = new HashSet<>();
+            String globalSetting = null;
+            if (hasGlobalSetting) {
+                globalSetting = Notation.getString(buffer) + Notation.getString(buffer);
+                set.add(globalSetting);
+            }
             for (int i = 0; i < count; i++) {
-                String globalSetting = null;
-                if(hasGlobalSetting){
-                    globalSetting = Notation.getString(buffer) + Notation.getString(buffer);
-                    set.add(globalSetting);
-                }
+
                 String keySpace = null;
                 String table = null;
-                if(!hasGlobalSetting){
+                if (!hasGlobalSetting) {
                     keySpace = Notation.getString(buffer);
                     table = Notation.getString(buffer);
-                    set.add(keySpace+table);
+                    set.add(keySpace + table);
                 }
                 String cname = Notation.getString(buffer);
-                Notation.OptionNotation option = Notation.getOption(buffer);
+                Notation.OptionNotation option = Notation.getOption(buffer, new Notation.OptionParser() {
+                    @Override
+                    public Object parse(ByteBuffer buffer) {
+                        return null;
+                    }
+                });
                 set.add(cname);
                 set.add(option);
             }
-            return new Metadata(flags,count,pagingState,set);
+            return new Metadata(flags, count, pagingState, set);
         }
     }
 }

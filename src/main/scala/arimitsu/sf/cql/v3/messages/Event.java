@@ -1,12 +1,58 @@
 package arimitsu.sf.cql.v3.messages;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created by sxend on 14/06/07.
  */
-public enum Event {
-    TOPOLOGY_CHANGE,
-    STATUS_CHANGE,
-    SCHEMA_CHANGE
+public class Event {
+
+    public final EventObject eventObject;
+
+    public Event(EventObject eventObject) {
+        this.eventObject = eventObject;
+    }
+
+    public static enum EventType {
+        TOPOLOGY_CHANGE,
+        STATUS_CHANGE,
+        SCHEMA_CHANGE
+    }
+
+    public static interface EventObject {
+        public EventType getEventType();
+    }
+
+    public static class TopologyChange implements EventObject {
+
+        @Override
+        public EventType getEventType() {
+            return EventType.TOPOLOGY_CHANGE;
+        }
+    }
+
+    public static class SchemaChange implements EventObject {
+
+        @Override
+        public EventType getEventType() {
+            return EventType.SCHEMA_CHANGE;
+        }
+    }
+
+    public static class StatusChange implements EventObject {
+
+        @Override
+        public EventType getEventType() {
+            return EventType.STATUS_CHANGE;
+        }
+    }
+
+    public static final ResponseParser<Event> PARSER = new ResponseParser<Event>() {
+        @Override
+        public Event parse(ByteBuffer body) {
+            return null;
+        }
+    };
 }
 //object Event {
 //  def apply(frame: Frame): Event = {

@@ -4,21 +4,29 @@ import arimitsu.sf.cql.v3.Consistency;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by sxend on 14/06/07.
  */
 public class Notation {
 
-    public static class OptionNotation {
+    public static class OptionNotation<A> {
         public final short id;
-        public final Object value;
+        public final A value;
 
-        public OptionNotation(short id, Object value) {
+        public OptionNotation(short id, A value) {
             this.id = id;
             this.value = value;
         }
+    }
+
+    public static interface OptionParser<A> {
+        public A parse(ByteBuffer buffer);
     }
 
     public static short getShort(ByteBuffer buffer) {
@@ -74,15 +82,15 @@ public class Notation {
         }
     }
 
-    public static OptionNotation getOption(ByteBuffer buffer) {
+    public static <A> OptionNotation<A> getOption(ByteBuffer buffer, OptionParser<A> parser) {
         short id = getShort(buffer);
-        return new OptionNotation(id, null);
+        return new OptionNotation<>(id, parser.parse(buffer));
     }
 
-    public static List<OptionNotation> getOptionList(ByteBuffer buffer) {
-        List<OptionNotation> list = new ArrayList<>();
+    public static <A> List<OptionNotation<A>> getOptionList(ByteBuffer buffer, OptionParser<A> parser) {
+        List<OptionNotation<A>> list = new ArrayList<>();
         for (int i = 0, length = buffer.getShort(); i < length; i++) {
-            list.add(getOption(buffer));
+            list.add(getOption(buffer, parser));
         }
         return list;
     }
@@ -121,7 +129,8 @@ public class Notation {
         }
         return join(mapLength, result);
     }
-    public static byte[] toLongString(String str){
+
+    public static byte[] toLongString(String str) {
         byte[] bytes;
         try {
             bytes = str.getBytes("UTF-8");
@@ -130,6 +139,7 @@ public class Notation {
         }
         return join(int2Bytes(bytes.length), bytes);
     }
+
     public static byte[] toString(String str) {
         byte[] bytes;
         try {
@@ -147,6 +157,7 @@ public class Notation {
         bytes[1] = (byte) (0xff & s);
         return bytes;
     }
+
     public static byte[] int2Bytes(int s) {
         byte[] bytes = new byte[4];
         bytes[0] = (byte) (0xff & (s >>> 24));
@@ -155,6 +166,7 @@ public class Notation {
         bytes[3] = (byte) (0xff & s);
         return bytes;
     }
+
     public static byte[] long2Bytes(long s) {
         byte[] bytes = new byte[8];
         bytes[0] = (byte) (0xff & (s >>> 56));

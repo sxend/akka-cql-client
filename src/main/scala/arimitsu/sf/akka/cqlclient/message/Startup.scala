@@ -9,7 +9,7 @@ import java.nio.ByteBuffer
 /**
  * Created by sxend on 14/06/08.
  */
-case class Startup(options: Map[String, String], promise: Promise[Either[Authenticate, Ready]]) extends Message(promise) {
+case class Startup(promise: Promise[Either[Authenticate, Ready]]) extends Message(promise) {
   override def process(frame: Frame): Unit = {
     val buffer = ByteBuffer.wrap(frame.body)
     val result = frame.header.opcode match {

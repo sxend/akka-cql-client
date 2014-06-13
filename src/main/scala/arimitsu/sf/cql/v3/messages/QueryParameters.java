@@ -41,9 +41,9 @@ public class QueryParameters {
     }
 
     public byte[] toBytes() {
-        return join(join(join(Notation.short2Bytes(consistency.level),values.toBytes()),
-                    Notation.short2Bytes(serialConsistency.level)
-                ),Notation.long2Bytes(timestamp));
+        return join(join(join(Notation.short2Bytes(consistency.level), values.toBytes()),
+                Notation.short2Bytes(serialConsistency.level)
+        ), Notation.long2Bytes(timestamp));
 
     }
 
