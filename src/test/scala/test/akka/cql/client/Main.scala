@@ -47,7 +47,8 @@ object Main {
           r =>
             println(System.currentTimeMillis())
             import arimitsu.sf.cql.v3.Consistency._
-            client.query("select * from test.test_table;", new QueryParameters(ALL, Query.QueryFlags.VALUES.mask, new ListValues(), 1, new Array[Byte](1), ALL, System.currentTimeMillis()))
+            val queryParam = new QueryParameters(ALL, Query.QueryFlags.VALUES.mask, new ListValues(), 1, new Array[Byte](1), ALL, System.currentTimeMillis())
+            client.query("select * from test.test_table1;",queryParam)
         }.onComplete {
           case Success(a) =>
             println(System.currentTimeMillis())

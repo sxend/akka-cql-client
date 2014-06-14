@@ -1,1 +1,0 @@
-create column family test_table with comparator=UTF8Type and default_validation_class=UTF8Type and key_validation_class=UTF8Type;

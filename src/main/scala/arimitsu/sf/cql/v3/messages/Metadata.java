@@ -3,8 +3,10 @@ package arimitsu.sf.cql.v3.messages;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sxend on 14/06/11.
@@ -14,13 +16,15 @@ public class Metadata {
     public final int flags;
     public final int columnsCount;
     public final byte[] pagingState;
-    public final Set<Object> globalTableSpec;
+    public final Map<String, String> globalTableSpec;
+    public final List<ColumnSpec> columnSpec;
 
-    public Metadata(int flags, int columnsCount, byte[] pagingState, Set<Object> globalTableSpec) {
+    public Metadata(int flags, int columnsCount, byte[] pagingState, Map<String, String> globalTableSpec, List<ColumnSpec> columnSpec) {
         this.flags = flags;
         this.columnsCount = columnsCount;
         this.pagingState = pagingState;
         this.globalTableSpec = globalTableSpec;
+        this.columnSpec = columnSpec;
     }
 
 
@@ -54,32 +58,39 @@ public class Metadata {
             if (hasPagingState) {
                 pagingState = Notation.getBytes(buffer);
             }
-            Set<Object> set = new HashSet<>();
-            String globalSetting = null;
+            Map<String, String> globalSetting = new HashMap<>();
             if (hasGlobalSetting) {
-                globalSetting = Notation.getString(buffer) + Notation.getString(buffer);
-                set.add(globalSetting);
+                globalSetting.put("KEYSPACE", Notation.getString(buffer));
+                globalSetting.put("TABLE_NAME", Notation.getString(buffer));
             }
+            List<ColumnSpec> columnSpecs = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-
                 String keySpace = null;
-                String table = null;
+                String tableName = null;
                 if (!hasGlobalSetting) {
                     keySpace = Notation.getString(buffer);
-                    table = Notation.getString(buffer);
-                    set.add(keySpace + table);
+                    tableName = Notation.getString(buffer);
                 }
-                String cname = Notation.getString(buffer);
-                Notation.OptionNotation option = Notation.getOption(buffer, new Notation.OptionParser() {
-                    @Override
-                    public Object parse(ByteBuffer buffer) {
-                        return null;
-                    }
-                });
-                set.add(cname);
-                set.add(option);
+                String columnName = Notation.getString(buffer);
+                ColumnType columnType = ColumnType.parse(buffer);
+                columnSpecs.add(new ColumnSpec(keySpace, tableName, columnName, columnType));
             }
-            return new Metadata(flags, count, pagingState, set);
+            return new Metadata(flags, count, pagingState, globalSetting, columnSpecs);
+        }
+    }
+
+    public static class ColumnSpec {
+        // (<ksname><tablename>)?<name><type>
+        public final String keySpace;
+        public final String tableName;
+        public final String columnName;
+        public final ColumnType columnType;
+
+        public ColumnSpec(String keySpace, String tableName, String columnName, ColumnType columnType) {
+            this.keySpace = keySpace;
+            this.tableName = tableName;
+            this.columnName = columnName;
+            this.columnType = columnType;
         }
     }
 }
