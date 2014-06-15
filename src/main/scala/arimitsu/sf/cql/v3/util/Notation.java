@@ -4,11 +4,7 @@ import arimitsu.sf.cql.v3.Consistency;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by sxend on 14/06/07.
@@ -185,5 +181,13 @@ public class Notation {
         System.arraycopy(byte1, 0, resultBytes, 0, byte1.length);
         System.arraycopy(byte2, 0, resultBytes, byte1.length, byte2.length);
         return resultBytes;
+    }
+
+    public static int toInt(byte[] bytes) {
+        int result = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            result += (Byte.toUnsignedInt(bytes[i]) << ((bytes.length - i - 1) * 8));
+        }
+        return result;
     }
 }
