@@ -72,7 +72,7 @@ public class Metadata {
                     tableName = Notation.getString(buffer);
                 }
                 String columnName = Notation.getString(buffer);
-                ColumnType columnType = ColumnType.parse(buffer);
+                ColumnType columnType = ColumnType.PARSER.parse(buffer);
                 columnSpecs.add(new ColumnSpec(keySpace, tableName, columnName, columnType));
             }
             return new Metadata(flags, count, pagingState, globalSetting, columnSpecs);

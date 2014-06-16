@@ -42,20 +42,26 @@ public interface ColumnType {
             }
             throw new RuntimeException("invalid id.");
         }
+        @Override
+        public short getId(){
+            return this.id;
+        }
     }
-
+    public short getId();
     public static class ListType implements ColumnType {
-        public final ColumnType rawType = ColumnTypeEnum.LIST;
         public final ColumnType valueType;
 
         public ListType(ColumnType valueType) {
             this.valueType = valueType;
         }
 
+        @Override
+        public short getId() {
+            return ColumnTypeEnum.LIST.id;
+        }
     }
 
     public static class MapType implements ColumnType {
-        public final ColumnType rawType = ColumnTypeEnum.MAP;
         public final ColumnType keyType;
         public final ColumnType valueType;
 
@@ -64,29 +70,44 @@ public interface ColumnType {
             this.valueType = valueType;
         }
 
+        @Override
+        public short getId() {
+            return ColumnTypeEnum.MAP.id;
+        }
     }
 
     public static class SetType implements ColumnType {
-        public final ColumnType rawType = ColumnTypeEnum.SET;
         public final ColumnType valueType;
 
         public SetType(ColumnType valueType) {
             this.valueType = valueType;
         }
-    }
 
-    public static ColumnType parse(ByteBuffer buffer) {
-        ColumnTypeEnum typeEnum = ColumnTypeEnum.valueOf(Notation.getShort(buffer));
-        switch (typeEnum) {
-            case LIST:
-                return new ListType(parse(buffer));
-            case SET:
-                return new SetType(parse(buffer));
-            case MAP:
-                return new MapType(parse(buffer), parse(buffer));
-            default:
-                return typeEnum;
+        @Override
+        public short getId() {
+            return ColumnTypeEnum.SET.id;
         }
+    }
+    public static final ColumnTypeParser PARSER = new ColumnTypeParser() {
+        @Override
+        public ColumnType parse(ByteBuffer buffer) {
+            ColumnTypeEnum typeEnum = ColumnTypeEnum.valueOf(Notation.getShort(buffer));
+            switch (typeEnum) {
+                case LIST:
+                    return new ListType(parse(buffer));
+                case SET:
+                    return new SetType(parse(buffer));
+                case MAP:
+                    return new MapType(parse(buffer), parse(buffer));
+                default:
+                    return typeEnum;
+            }
+        }
+
+
+    };
+    static interface ColumnTypeParser {
+        ColumnType parse(ByteBuffer buffer);
     }
 
 }

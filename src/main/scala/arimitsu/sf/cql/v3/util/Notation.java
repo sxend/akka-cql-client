@@ -2,9 +2,16 @@ package arimitsu.sf.cql.v3.util;
 
 import arimitsu.sf.cql.v3.Consistency;
 
-import java.net.InetSocketAddress;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by sxend on 14/06/07.
@@ -52,10 +59,37 @@ public class Notation {
         return UUID.nameUUIDFromBytes(bytes);
     }
 
+    private static final Constructor<UUID> uuidConstructor;
+
+    static {
+        Constructor<UUID> c = null;
+        try {
+            c = UUID.class.getDeclaredConstructor(byte[].class);
+            c.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+        }
+        uuidConstructor = c;
+    }
+
+    public static UUID toUUID(byte[] bytes) {
+        try {
+            return uuidConstructor.newInstance(bytes);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<String> getStringList(ByteBuffer buffer) {
         List<String> list = new ArrayList<>();
         for (int i = 0, length = buffer.getShort(); i < length; i++) {
             list.add(getString(buffer));
+        }
+        return list;
+    }
+    public static List<String> getLongStringList(ByteBuffer buffer) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0, length = buffer.getInt(); i < length; i++) {
+            list.add(getLongString(buffer));
         }
         return list;
     }
@@ -91,10 +125,18 @@ public class Notation {
         return list;
     }
 
-    public static InetSocketAddress getINet(ByteBuffer buffer) {
+    public static InetAddress getINet(ByteBuffer buffer) {
         byte[] addrArea = new byte[buffer.get()];
         buffer.get(addrArea);
-        return InetSocketAddress.createUnresolved(new String(addrArea), buffer.getInt());
+        return toInet(addrArea);
+    }
+
+    public static InetAddress toInet(byte[] bytes) {
+        try {
+            return InetAddress.getByAddress(bytes);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Consistency getConsistency(ByteBuffer buffer) {
@@ -183,10 +225,10 @@ public class Notation {
         return resultBytes;
     }
 
-    public static int toInt(byte[] bytes) {
-        int result = 0;
+    public static long getLong(byte[] bytes) {
+        long result = 0;
         for (int i = 0; i < bytes.length; i++) {
-            result += (Byte.toUnsignedInt(bytes[i]) << ((bytes.length - i - 1) * 8));
+            result += ((0xff & bytes[i]) << ((bytes.length - i - 1) * 8));
         }
         return result;
     }
