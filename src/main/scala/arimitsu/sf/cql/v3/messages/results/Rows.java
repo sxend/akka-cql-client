@@ -1,7 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
 
-import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.Metadata;
 import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
@@ -40,10 +39,10 @@ public class Rows implements Result {
             List<Map<String, Object>> rowsContent = new ArrayList<>();
             for (int i = 0; i < rowsCount; i++) {
                 Map<String, Object> map = new HashMap<>();
-                for (int j = 0; j < metadata.columnsCount; j++) {
-                    ColumnType columnType = metadata.columnSpec.get(j).columnType;
-                    Object result = columnType.getParser().parse(buffer);
-                    map.put(metadata.columnSpec.get(j).columnName, result);
+                for (int j = 0, columnCount = metadata.columnsCount; j < columnCount; j++) {
+                    Metadata.ColumnSpec columnSpec = metadata.columnSpec.get(j);
+                    Object result = columnSpec.columnType.getParser().parse(buffer);
+                    map.put(columnSpec.columnName, result);
                 }
                 rowsContent.add(map);
             }
