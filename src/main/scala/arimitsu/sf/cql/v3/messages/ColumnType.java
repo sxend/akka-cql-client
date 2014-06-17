@@ -1,24 +1,7 @@
 package arimitsu.sf.cql.v3.messages;
 
 
-import arimitsu.sf.cql.v3.messages.results.columntype.AsciiType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BigintType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BlobType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BooleanType;
-import arimitsu.sf.cql.v3.messages.results.columntype.CounterType;
-import arimitsu.sf.cql.v3.messages.results.columntype.DecimalType;
-import arimitsu.sf.cql.v3.messages.results.columntype.DoubleType;
-import arimitsu.sf.cql.v3.messages.results.columntype.FloatType;
-import arimitsu.sf.cql.v3.messages.results.columntype.InetType;
-import arimitsu.sf.cql.v3.messages.results.columntype.IntType;
-import arimitsu.sf.cql.v3.messages.results.columntype.ListType;
-import arimitsu.sf.cql.v3.messages.results.columntype.MapType;
-import arimitsu.sf.cql.v3.messages.results.columntype.SetType;
-import arimitsu.sf.cql.v3.messages.results.columntype.TimestampType;
-import arimitsu.sf.cql.v3.messages.results.columntype.TimeuuidType;
-import arimitsu.sf.cql.v3.messages.results.columntype.UuidType;
-import arimitsu.sf.cql.v3.messages.results.columntype.VarcharType;
-import arimitsu.sf.cql.v3.messages.results.columntype.VarintType;
+import arimitsu.sf.cql.v3.messages.results.columntype.*;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;

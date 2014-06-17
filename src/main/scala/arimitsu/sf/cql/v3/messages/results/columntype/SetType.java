@@ -17,6 +17,7 @@ public class SetType implements ColumnType {
         @Override
         public Set<Object> parse(ByteBuffer buffer) {
             Set<Object> set = new HashSet<>();
+            int byteLength = buffer.getInt();
             int length = buffer.getInt();
             for (int i = 0; i < length; i++) {
                 set.add(valueType.getParser().parse(buffer));

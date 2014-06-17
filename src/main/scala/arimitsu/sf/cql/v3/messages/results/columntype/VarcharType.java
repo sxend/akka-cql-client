@@ -3,8 +3,18 @@ package arimitsu.sf.cql.v3.messages.results.columntype;
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
 import arimitsu.sf.cql.v3.messages.Parser;
+import arimitsu.sf.cql.v3.util.Notation;
+
+import java.nio.ByteBuffer;
 
 public class VarcharType implements ColumnType {
+    private static final Parser<String> PARSER = new Parser<String>() {
+        @Override
+        public String parse(ByteBuffer buffer) {
+            return Notation.getString(buffer, buffer.getInt());
+        }
+    };
+
     @Override
     public short getId() {
         return ColumnTypeEnum.VARCHAR.id;
@@ -12,6 +22,6 @@ public class VarcharType implements ColumnType {
 
     @Override
     public Parser<?> getParser() {
-        return null;
+        return PARSER;
     }
 }

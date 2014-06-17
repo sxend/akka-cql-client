@@ -20,6 +20,7 @@ public class MapType implements ColumnType {
             Parser<?> keyParser = keyType.getParser();
             Parser<?> valueParser = valueType.getParser();
             Map<Object, Object> map = new HashMap<>();
+            int byteLength = buffer.getInt();
             int length = buffer.getInt();
             for (int i = 0; i < length; i++) {
                 map.put(keyParser.parse(buffer), valueParser.parse(buffer));

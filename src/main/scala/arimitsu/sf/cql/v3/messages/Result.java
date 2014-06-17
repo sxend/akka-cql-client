@@ -1,9 +1,6 @@
 package arimitsu.sf.cql.v3.messages;
 
-import arimitsu.sf.cql.v3.messages.results.Prepared;
-import arimitsu.sf.cql.v3.messages.results.Rows;
-import arimitsu.sf.cql.v3.messages.results.SchemaChange;
-import arimitsu.sf.cql.v3.messages.results.SetKeyspace;
+import arimitsu.sf.cql.v3.messages.results.*;
 import arimitsu.sf.cql.v3.messages.results.Void;
 
 import java.nio.ByteBuffer;

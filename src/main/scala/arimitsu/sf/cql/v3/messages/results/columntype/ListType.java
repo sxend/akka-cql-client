@@ -16,6 +16,7 @@ public class ListType implements ColumnType {
     private final Parser<List<Object>> PARSER = new Parser<List<Object>>() {
         @Override
         public List<Object> parse(ByteBuffer buffer) {
+            int byteLength = buffer.getInt();
             int length = buffer.getInt();
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < length; i++) {

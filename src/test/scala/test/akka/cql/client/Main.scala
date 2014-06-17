@@ -4,16 +4,12 @@ import akka.actor.ActorSystem
 import java.net.InetSocketAddress
 import arimitsu.sf.akka.cqlclient.Cluster
 import arimitsu.sf.cql.v3.{Compression, Flags}
-import arimitsu.sf.cql.v3.messages.{ColumnType, Result, Query, QueryParameters}
+import arimitsu.sf.cql.v3.messages.{Result, Query, QueryParameters}
 import arimitsu.sf.cql.v3.messages.QueryParameters.ListValues
 import arimitsu.sf.cql.v3.messages.results.Rows
-import arimitsu.sf.cql.v3.messages.ColumnType.{ColumnTypeDefinition, SetType, MapType, ListType}
-import ColumnTypeDefinition._
 import scala.util.Failure
 import arimitsu.sf.akka.cqlclient.Configuration
 import scala.util.Success
-import arimitsu.sf.cql.v3.util.Notation
-import java.nio.ByteBuffer
 
 /**
  * Created by sxend on 14/05/31.
@@ -60,7 +56,11 @@ object Main {
               case Result.Kind.ROWS =>
                 import scala.collection.JavaConversions._
                 val rows = a.asInstanceOf[Rows]
-
+                rows.rowsContent.foreach {
+                  row => row.foreach {
+                    cols => println(cols._1 + " -> " + cols._2)
+                  }
+                }
             }
           case Failure(t) => t.printStackTrace()
         }
