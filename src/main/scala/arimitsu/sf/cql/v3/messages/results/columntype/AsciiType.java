@@ -14,7 +14,7 @@ public class AsciiType implements ColumnType {
     private static final Parser<String> PARSER = new Parser<String>() {
         @Override
         public String parse(ByteBuffer buffer) {
-            return Notation.getString(buffer);
+            return Notation.getLongString(buffer);
         }
     };
 
