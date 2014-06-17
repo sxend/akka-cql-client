@@ -21,7 +21,7 @@ public class Supported {
         this.stringMultiMap = stringMultiMap;
     }
 
-    public static final ResponseParser<Supported> SupportedParser = new ResponseParser<Supported>() {
+    public static final Parser<Supported> SupportedParser = new Parser<Supported>() {
         @Override
         public Supported parse(ByteBuffer body) {
             return new Supported(Notation.getStringMultiMap(body));

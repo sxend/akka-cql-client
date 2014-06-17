@@ -14,7 +14,7 @@ public class Authenticate {
         this.className = className;
     }
 
-    public static final ResponseParser<Authenticate> AuthenticateParser = new ResponseParser<Authenticate>() {
+    public static final Parser<Authenticate> AuthenticateParser = new Parser<Authenticate>() {
         @Override
         public Authenticate parse(ByteBuffer body) {
             return new Authenticate(Notation.getString(body));

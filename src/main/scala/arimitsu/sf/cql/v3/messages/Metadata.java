@@ -27,7 +27,6 @@ public class Metadata {
         this.columnSpec = columnSpec;
     }
 
-
     public static enum MetadataFlags {
         GLOBAL_TABLES_SPEC(0x0001),
         HAS_MORE_PAGES(0x0002),
@@ -47,7 +46,8 @@ public class Metadata {
         }
     }
 
-    public static class MetadataParser {
+    public static final Parser<Metadata> PARSER = new Parser<Metadata>() {
+        @Override
         public Metadata parse(ByteBuffer buffer) {
             int flags = buffer.getInt();
             int count = buffer.getInt();
@@ -77,7 +77,8 @@ public class Metadata {
             }
             return new Metadata(flags, count, pagingState, globalSetting, columnSpecs);
         }
-    }
+    };
+
 
     public static class ColumnSpec {
         // (<ksname><tablename>)?<name><type>

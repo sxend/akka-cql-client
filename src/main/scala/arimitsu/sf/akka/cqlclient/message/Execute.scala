@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
  */
 case class Execute(id: Array[Byte], parameters: QueryParameters, promise: Promise[Result]) extends Message(promise) {
   override def process(frame: Frame): Unit = {
-    val result = Result.Parser.parse(ByteBuffer.wrap(frame.body))
+    val result = Result.PARSER.parse(ByteBuffer.wrap(frame.body))
     promise.success(result)
   }
 }

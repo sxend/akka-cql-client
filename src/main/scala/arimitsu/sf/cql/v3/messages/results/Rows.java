@@ -3,8 +3,8 @@ package arimitsu.sf.cql.v3.messages.results;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.Metadata;
+import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
-import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -32,66 +32,17 @@ public class Rows implements Result {
         return Result.Kind.ROWS;
     }
 
-    private static final Metadata.MetadataParser metadataParser = new Metadata.MetadataParser();
-    public static final ResultParser<Rows> PARSER = new ResultParser<Rows>() {
+    public static final Parser<Rows> PARSER = new Parser<Rows>() {
         @Override
-        public Rows parse(ByteBuffer body) {
-            Metadata metadata = metadataParser.parse(body);
-            int rowsCount = body.getInt();
+        public Rows parse(ByteBuffer buffer) {
+            Metadata metadata = Metadata.PARSER.parse(buffer);
+            int rowsCount = buffer.getInt();
             List<Map<String, Object>> rowsContent = new ArrayList<>();
             for (int i = 0; i < rowsCount; i++) {
                 Map<String, Object> map = new HashMap<>();
                 for (int j = 0; j < metadata.columnsCount; j++) {
                     ColumnType columnType = metadata.columnSpec.get(j).columnType;
-                    ColumnType.ColumnTypeEnum typeEnum = ColumnType.ColumnTypeEnum.valueOf(columnType.getId());
-                    Object result = null;
-                    switch (typeEnum) {
-                        case CUSTOM:
-                            break;
-                        case ASCII:
-                            result = new String(Notation.getBytes(body));
-                            break;
-                        case BIGINT:
-                            break;
-                        case BLOB:
-                            break;
-                        case BOOLEAN:
-                            break;
-                        case COUNTER:
-                            break;
-                        case DECIMAL:
-                            break;
-                        case DOUBLE:
-                            break;
-                        case FLOAT:
-                            break;
-                        case INT:
-                            break;
-                        case TIMESTAMP:
-                            break;
-                        case UUID:
-                            break;
-                        case VARCHAR:
-                            break;
-                        case VARINT:
-                            break;
-                        case TIMEUUID:
-                            break;
-                        case INET:
-                            break;
-                        case LIST:
-                            break;
-                        case MAP:
-                            break;
-                        case SET:
-                            break;
-                        case UDT:
-                            break;
-                        case TUPLE:
-                            break;
-                        default:
-                            throw new RuntimeException("invalid type.");
-                    }
+                    Object result = columnType.getParser().parse(buffer);
                     map.put(metadata.columnSpec.get(j).columnName, result);
                 }
                 rowsContent.add(map);

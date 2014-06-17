@@ -14,23 +14,17 @@ import java.nio.ByteBuffer;
 public interface Result {
     public Kind getKind();
 
-    public static interface ResultParser<R extends Result> extends ResponseParser<R> {
-    }
-
-
     public static enum Kind {
-        VOID(0x0001, "Void", Void.PARSER),// : for results carrying no information.
-        ROWS(0x0002, "Rows", Rows.PARSER),//: for results to select queries, returning a set of rows.
-        SET_KEYSPACE(0x0003, "Set_keyspace", SetKeyspace.PARSER),//: the result to a `use` query.
-        PREPARED(0x0004, "Prepared", Prepared.PARSER),//: result to a PREPARE message.
-        SCHEMA_CHANGE(0x0005, "Schema_change", SchemaChange.PARSER),;
+        VOID(0x0001, Void.PARSER),// : for results carrying no information.
+        ROWS(0x0002, Rows.PARSER),//: for results to select queries, returning a set of rows.
+        SET_KEYSPACE(0x0003, SetKeyspace.PARSER),//: the result to a `use` query.
+        PREPARED(0x0004, Prepared.PARSER),//: result to a PREPARE message.
+        SCHEMA_CHANGE(0x0005, SchemaChange.PARSER),;
         public final int code;// : the result to a schema altering query.
-        public final String name;
-        private final ResultParser parser;
+        private final Parser<? extends Result> parser;
 
-        Kind(int code, String name, ResultParser<? extends Result> parser) {
+        Kind(int code, Parser<? extends Result> parser) {
             this.code = code;
-            this.name = name;
             this.parser = parser;
         }
 
@@ -42,24 +36,25 @@ public interface Result {
         }
     }
 
-    public static final ResponseParser<Result> Parser = new ResponseParser<Result>() {
+    public static final Parser<Result> PARSER = new Parser<Result>() {
         @Override
         public Result parse(ByteBuffer body) {
             int code = body.getInt();
             Kind kind = Kind.valueOf(code);
-            switch (kind) {
-                case VOID:
-                    return (Void) Kind.VOID.parser.parse(body);
-                case ROWS:
-                    return (Rows) Kind.ROWS.parser.parse(body);
-                case PREPARED:
-                    return (Prepared) Kind.PREPARED.parser.parse(body);
-                case SET_KEYSPACE:
-                    return (SetKeyspace) Kind.SET_KEYSPACE.parser.parse(body);
-                case SCHEMA_CHANGE:
-                    return (SchemaChange) Kind.SCHEMA_CHANGE.parser.parse(body);
-            }
-            throw new RuntimeException("invalid kind code.");
+            return kind.parser.parse(body);
+//            switch (kind) {
+//                case VOID:
+//                    return (Void) Kind.VOID.parser.parse(body);
+//                case ROWS:
+//                    return (Rows) Kind.ROWS.parser.parse(body);
+//                case PREPARED:
+//                    return (Prepared) Kind.PREPARED.parser.parse(body);
+//                case SET_KEYSPACE:
+//                    return (SetKeyspace) Kind.SET_KEYSPACE.parser.parse(body);
+//                case SCHEMA_CHANGE:
+//                    return (SchemaChange) Kind.SCHEMA_CHANGE.parser.parse(body);
+//            }
+//            throw new RuntimeException("invalid kind code.");
         }
     };
 }

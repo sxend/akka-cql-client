@@ -47,7 +47,7 @@ public class Event {
         }
     }
 
-    public static final ResponseParser<Event> PARSER = new ResponseParser<Event>() {
+    public static final Parser<Event> PARSER = new Parser<Event>() {
         @Override
         public Event parse(ByteBuffer body) {
             return null;

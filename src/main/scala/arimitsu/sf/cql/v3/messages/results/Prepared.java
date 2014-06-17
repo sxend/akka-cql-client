@@ -1,6 +1,7 @@
 package arimitsu.sf.cql.v3.messages.results;
 
 import arimitsu.sf.cql.v3.messages.Metadata;
+import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
 
@@ -26,10 +27,10 @@ public class Prepared implements Result {
         return Kind.PREPARED;
     }
 
-    public static final ResultParser<Prepared> PARSER = new ResultParser<Prepared>() {
+    public static final Parser<Prepared> PARSER = new Parser<Prepared>() {
         @Override
-        public Prepared parse(ByteBuffer body) {
-            return new Prepared(Notation.getShortBytes(body), new Metadata.MetadataParser().parse(body), new Metadata.MetadataParser().parse(body));
+        public Prepared parse(ByteBuffer buffer) {
+            return new Prepared(Notation.getShortBytes(buffer), Metadata.PARSER.parse(buffer), Metadata.PARSER.parse(buffer));
         }
     };
 }

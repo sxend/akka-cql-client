@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
  */
 public class Ready {
     private static Ready INSTANCE = new Ready();
-    public static final ResponseParser<Ready> ReadyParser = new ResponseParser<Ready>() {
+    public static final Parser<Ready> ReadyParser = new Parser<Ready>() {
         @Override
         public Ready parse(ByteBuffer body) {
             return INSTANCE;

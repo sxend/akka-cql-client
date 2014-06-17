@@ -1,5 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
+import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
 
@@ -30,10 +31,10 @@ public class SchemaChange implements Result {
         return Kind.SCHEMA_CHANGE;
     }
 
-    public static final ResultParser<SchemaChange> PARSER = new ResultParser<SchemaChange>() {
+    public static final Parser<SchemaChange> PARSER = new Parser<SchemaChange>() {
         @Override
-        public SchemaChange parse(ByteBuffer body) {
-            return new SchemaChange(Notation.getString(body), Notation.getString(body), Notation.getString(body));
+        public SchemaChange parse(ByteBuffer buffer) {
+            return new SchemaChange(Notation.getString(buffer), Notation.getString(buffer), Notation.getString(buffer));
         }
     };
 }

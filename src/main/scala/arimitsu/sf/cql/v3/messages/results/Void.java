@@ -1,5 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
+import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
 
 import java.nio.ByteBuffer;
@@ -18,9 +19,9 @@ public class Void implements Result {
         return Kind.VOID;
     }
 
-    public static final ResultParser<Void> PARSER = new ResultParser<Void>() {
+    public static final Parser<Void> PARSER = new Parser<Void>() {
         @Override
-        public Void parse(ByteBuffer body) {
+        public Void parse(ByteBuffer buffer) {
             return Void.INSTANCE;
         }
     };

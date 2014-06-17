@@ -86,6 +86,7 @@ public class Notation {
         }
         return list;
     }
+
     public static List<String> getLongStringList(ByteBuffer buffer) {
         List<String> list = new ArrayList<>();
         for (int i = 0, length = buffer.getInt(); i < length; i++) {

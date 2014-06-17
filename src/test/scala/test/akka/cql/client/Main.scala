@@ -7,8 +7,8 @@ import arimitsu.sf.cql.v3.{Compression, Flags}
 import arimitsu.sf.cql.v3.messages.{ColumnType, Result, Query, QueryParameters}
 import arimitsu.sf.cql.v3.messages.QueryParameters.ListValues
 import arimitsu.sf.cql.v3.messages.results.Rows
-import arimitsu.sf.cql.v3.messages.ColumnType.{ColumnTypeEnum, SetType, MapType, ListType}
-import arimitsu.sf.cql.v3.messages.ColumnType.ColumnTypeEnum._
+import arimitsu.sf.cql.v3.messages.ColumnType.{ColumnTypeDefinition, SetType, MapType, ListType}
+import ColumnTypeDefinition._
 import scala.util.Failure
 import arimitsu.sf.akka.cqlclient.Configuration
 import scala.util.Success
@@ -51,7 +51,7 @@ object Main {
             println(System.currentTimeMillis())
             import arimitsu.sf.cql.v3.Consistency._
             val queryParam = new QueryParameters(ALL, Query.QueryFlags.VALUES.mask, new ListValues(), 1, new Array[Byte](1), ALL, System.currentTimeMillis())
-            client.query("select * from test.test_table1;", queryParam)
+            client.query[String]("select * from test.test_table1;", queryParam)
         }.onComplete {
           case Success(a) =>
             println(System.currentTimeMillis())

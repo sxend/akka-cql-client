@@ -21,7 +21,7 @@ public class Error {
         return new RuntimeException(this.code + " : " + this.message);
     }
 
-    public static final ResponseParser<Error> ErrorParser = new ResponseParser<Error>() {
+    public static final Parser<Error> ErrorParser = new Parser<Error>() {
         @Override
         public Error parse(ByteBuffer body) {
             return new Error(ErrorCodes.valueOf(body.getInt()), Notation.getString(body));

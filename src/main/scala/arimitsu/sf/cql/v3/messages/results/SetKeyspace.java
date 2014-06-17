@@ -1,5 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
+import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
 
@@ -22,10 +23,10 @@ public class SetKeyspace implements Result {
         return Kind.SET_KEYSPACE;
     }
 
-    public static final ResultParser<SetKeyspace> PARSER = new ResultParser<SetKeyspace>() {
+    public static final Parser<SetKeyspace> PARSER = new Parser<SetKeyspace>() {
         @Override
-        public SetKeyspace parse(ByteBuffer body) {
-            return new SetKeyspace(Notation.getString(body));
+        public SetKeyspace parse(ByteBuffer buffer) {
+            return new SetKeyspace(Notation.getString(buffer));
         }
     };
 }
