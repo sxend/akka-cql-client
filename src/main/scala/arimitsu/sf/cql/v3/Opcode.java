@@ -6,20 +6,20 @@ package arimitsu.sf.cql.v3;
 public enum Opcode {
     ERROR(0x00),
     STARTUP(0x01),
-    OPTIONS(0x05),
-    QUERY(0x07),
-    AUTH_RESPONSE(0x0F),
-    PREPARE(0x09),
-    EXECUTE(0x0A),
-    BATCH(0x0D),
-    REGISTER(0x0B),
     READY(0x02),
     AUTHENTICATE(0x03),
-    RESULT(0x08),
+    OPTIONS(0x05),
     SUPPORTED(0x06),
+    QUERY(0x07),
+    RESULT(0x08),
+    PREPARE(0x09),
+    EXECUTE(0x0A),
+    REGISTER(0x0B),
+    EVENT(0x0C),
+    BATCH(0x0D),
     AUTH_CHALLENGE(0x0E),
-    AUTH_SUCCESS(0x10),
-    EVENT(0x0C),;
+    AUTH_RESPONSE(0x0F),
+    AUTH_SUCCESS(0x10),;
     public final byte number;
 
     Opcode(int number) {

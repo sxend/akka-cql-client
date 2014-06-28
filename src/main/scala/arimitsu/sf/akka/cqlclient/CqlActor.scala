@@ -1,22 +1,24 @@
 package arimitsu.sf.akka.cqlclient
 
-import akka.actor.Actor
+import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicReference
-import arimitsu.sf.akka.cqlclient.message._
+import scala.Some
+import akka.actor.Actor
 import akka.io.{Tcp, IO}
 import akka.io.Tcp._
-import arimitsu.sf.cql.v3._
 import akka.util.ByteString
-import java.nio.ByteBuffer
-import scala.collection.JavaConversions._
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Received
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
+import arimitsu.sf.cql.v3._
+import arimitsu.sf.akka.cqlclient.message._
 import arimitsu.sf.akka.cqlclient.message.Message
-import akka.io.Tcp.CommandFailed
+import arimitsu.sf.akka.cqlclient.message.AuthResponse
+import arimitsu.sf.akka.cqlclient.message.Execute
 import arimitsu.sf.akka.cqlclient.message.Options
 import arimitsu.sf.akka.cqlclient.message.Startup
+import arimitsu.sf.akka.cqlclient.message.Prepare
+import arimitsu.sf.akka.cqlclient.message.Batch
+import arimitsu.sf.akka.cqlclient.message.Query
+import arimitsu.sf.akka.cqlclient.message.Register
+import scala.collection.JavaConversions._
 
 /**
  * Created by sxend on 2014/06/06.
@@ -33,7 +35,7 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
       context stop self
     case c@Connected(remote, local) =>
       val connection = sender()
-      connection ! Register(self)
+      connection ! akka.io.Tcp.Register(self)
       val streamReference: AtomicReference[Short] = new AtomicReference[Short](1.toShort)
       val compression: Compression = nodeConfig.compression
       val operationMap = scala.collection.mutable.HashMap[Short, Message[_]]()
@@ -42,35 +44,58 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
         val result = streamReference.compareAndSet(streamId, (streamId + 1).toShort)
         if (result) {
           operationMap.put(streamId, message)
-          connection ! Write(ByteString(process(streamId)))
+          val bs: ByteString = ByteString(process(streamId))
+          println(bs.toString())
+          connection ! Write(bs)
         } else {
           self ! message
         }
       }
       context.become {
-        case option: Options =>
-          sendMessage(option, (streamId) =>
-            new arimitsu.sf.cql.v3.messages.Options(streamId, nodeConfig.flags).toFrame.toByteBuffer(compression.compressor)
-          )
         case startup: Startup =>
           sendMessage(startup, (streamId) => {
             val default = Map(arimitsu.sf.cql.v3.messages.Startup.CQL_VERSION -> arimitsu.sf.cql.v3.messages.Startup.CQL_VERSION_NUMBER)
             val option = if (Compression.NONE != nodeConfig.compression)
-              default + (arimitsu.sf.cql.v3.messages.Startup.OPTION_COMPRESSION -> nodeConfig.compression.name)
+              default + (messages.Startup.OPTION_COMPRESSION -> nodeConfig.compression.name)
             else default
-
-            new arimitsu.sf.cql.v3.messages.Startup(streamId, nodeConfig.flags, option).toFrame.toByteBuffer(Compression.NONE.compressor)
+            new messages.Startup(streamId, nodeConfig.flags, option).toFrame.toByteBuffer(Compression.NONE.compressor)
           })
+        case option: Options =>
+          sendMessage(option, (streamId) =>
+            new messages.Options(streamId, nodeConfig.flags).toFrame.toByteBuffer(compression.compressor)
+          )
         case query: Query =>
           sendMessage(query, (streamId) =>
-            new arimitsu.sf.cql.v3.messages.Query(streamId, nodeConfig.flags, query.string, query.parameter).toFrame.toByteBuffer(compression.compressor)
+            new messages.Query(streamId, nodeConfig.flags, query.string, query.parameter).toFrame.toByteBuffer(compression.compressor)
+          )
+        case prepare: Prepare =>
+          sendMessage(prepare, (streamId) => {
+            val frame = new messages.Prepare(streamId, nodeConfig.flags, prepare.query).toFrame
+            frame.toByteBuffer(compression.compressor)
+          }
+          )
+        case execute: Execute =>
+          sendMessage(execute, (streamId) =>
+            new messages.Execute(streamId, nodeConfig.flags, execute.id, execute.parameters).toFrame.toByteBuffer(compression.compressor)
+          )
+        case batch: Batch =>
+          sendMessage(batch, (streamId) =>
+            new messages.Batch(streamId, nodeConfig.flags).toFrame.toByteBuffer(compression.compressor)
+          )
+        case register: Register =>
+          sendMessage(register, (streamId) =>
+            new messages.Register(streamId, nodeConfig.flags, register.events).toFrame.toByteBuffer(compression.compressor)
+          )
+        case authResponse: AuthResponse =>
+          sendMessage(authResponse, (streamId) =>
+            new messages.AuthResponse(streamId, nodeConfig.flags, authResponse.token).toFrame.toByteBuffer(compression.compressor)
           )
         case Received(data) =>
           val frame = new Frame(data.toByteBuffer, compression.compressor)
           import Opcode._
           frame.header.opcode match {
             case ERROR =>
-              val e = arimitsu.sf.cql.v3.messages.Error.ErrorParser.parse(ByteBuffer.wrap(frame.body))
+              val e = arimitsu.sf.cql.v3.messages.Error.PARSER.parse(ByteBuffer.wrap(frame.body))
               val op = operationMap.remove(frame.header.streamId)
               op match {
                 case Some(s) => s.error(e)

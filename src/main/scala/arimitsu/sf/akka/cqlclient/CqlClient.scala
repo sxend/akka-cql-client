@@ -2,9 +2,17 @@ package arimitsu.sf.akka.cqlclient
 
 import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.concurrent.{Promise, Future}
-import arimitsu.sf.akka.cqlclient.message.{EventHandler, Startup, Query, Options}
-import arimitsu.sf.cql.v3.messages.{QueryParameters, Ready, Authenticate, Supported, Result}
-import scala.reflect.ClassTag
+import arimitsu.sf.cql.v3.messages.results.Prepared
+import arimitsu.sf.akka.cqlclient.message._
+import arimitsu.sf.cql.v3.messages._
+import arimitsu.sf.akka.cqlclient.message.AuthResponse
+import arimitsu.sf.akka.cqlclient.message.Execute
+import arimitsu.sf.akka.cqlclient.message.Register
+import arimitsu.sf.akka.cqlclient.message.Options
+import arimitsu.sf.akka.cqlclient.message.Startup
+import arimitsu.sf.akka.cqlclient.message.Prepare
+import arimitsu.sf.akka.cqlclient.message.Batch
+import arimitsu.sf.akka.cqlclient.message.Query
 
 /**
  * Created by sxend on 14/05/31.
@@ -71,10 +79,41 @@ class CqlClient(nodeConfig: NodeConfiguration, cqlActor: ActorRef, eventHandler:
     startup.promise.future
   }
 
-  def query[A: ClassTag](string: String, parameter: QueryParameters): Future[Result] = {
-    val tag = implicitly[ClassTag[A]]
+  def query(string: String, parameter: QueryParameters): Future[Result] = {
     val query = Query(string, parameter, Promise[Result]())
     cqlActor ! query
     query.promise.future
   }
+
+  def prepare(queryString: String): Future[Prepared] = {
+    val prepare = Prepare(queryString, Promise[Prepared]())
+    cqlActor ! prepare
+    prepare.promise.future
+  }
+
+  def execute(id: Array[Byte], parameter: QueryParameters): Future[Result] = {
+    val execute = Execute(id, parameter, Promise[Result]())
+    cqlActor ! execute
+    execute.promise.future
+  }
+
+
+  def batch(): Future[Result] = {
+    val batch = Batch(Promise[Result]())
+    cqlActor ! batch
+    batch.promise.future
+  }
+
+  def register(events: List[String]): Future[Ready] = {
+    val register = Register(events, Promise[Ready]())
+    cqlActor ! register
+    register.promise.future
+  }
+
+  def authResponse(token: Array[Byte]): Future[AuthSuccess] = {
+    val authResponse = AuthResponse(token, Promise[AuthSuccess]())
+    cqlActor ! authResponse
+    authResponse.promise.future
+  }
+
 }

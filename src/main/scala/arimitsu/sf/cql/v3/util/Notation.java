@@ -7,7 +7,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by sxend on 14/06/07.
@@ -154,6 +158,15 @@ public class Notation {
             map.put(getString(buffer), getStringList(buffer));
         }
         return map;
+    }
+
+    public static byte[] toStringList(List<String> list) {
+        byte[] length = short2Bytes((short) list.size());
+        byte[] bytes = new byte[]{};
+        for (String str : list) {
+            bytes = join(bytes, toString(str));
+        }
+        return join(length, bytes);
     }
 
     public static byte[] toStringMap(Map<String, String> maps) {

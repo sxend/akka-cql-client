@@ -1,4 +1,4 @@
-CREATE KEYSPACE  test;
+CREATE KEYSPACE test WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3 };
 USE test;
 CREATE TABLE test_table1(
 id int PRIMARY KEY,
@@ -29,6 +29,14 @@ INSERT INTO test_table1 (id,ascii_column,decimal_column,int_column,text_column,u
              100000, 1.01, [ 'list1','list2' ] , 1402726004, 'varchar',
              0x0000000000000001, 0.1, {'map_key1':'map_value1','map_key2':'map_value2'},now(),1,
              true, '20.20.20.20',{'set_value1', 'set_value2'});
+INSERT INTO test_table1 (id,ascii_column,decimal_column,int_column,text_column,uuid_column,
+             bigint_column,double_column,list_column,timestamp_column,varchar_column,
+             blob_column,float_column,map_column,timeuuid_column,varint_column,
+             boolean_column,inet_column,set_column )
+             VALUES ( 2, 'Ascii',1,1,'テキスト', 550e8400-e29b-41d4-a716-446655440000,
+             100000, 1.01, [ 'リスト値1','リスト値2' ] , 1402726004, 'ｳﾞｧｰキャラカラム',
+             0x0000000000000001, 0.1, {'キー':'ヴァリュー','キー2':'ヴァリュー2'},now(),1,
+             true, '20.20.20.20',{'セットヴァリュー1', 'セットヴァリュー2'});
 CREATE TABLE test_table2(
 id int PRIMARY KEY,
 text_column text,

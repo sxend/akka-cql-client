@@ -7,9 +7,7 @@ import arimitsu.sf.cql.v3.messages.Result;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sxend on 2014/06/11.
@@ -18,9 +16,9 @@ public class Rows implements Result {
     // <metadata><rows_count><rows_content>
     public final Metadata metadata;
     public final int rowsCount;
-    public final List<Map<String, Object>> rowsContent;
+    public final List<List<Column>> rowsContent;
 
-    public Rows(Metadata metadata, int rowsCount, List<Map<String, Object>> rowsContent) {
+    public Rows(Metadata metadata, int rowsCount, List<List<Column>> rowsContent) {
         this.metadata = metadata;
         this.rowsCount = rowsCount;
         this.rowsContent = rowsContent;
@@ -36,15 +34,15 @@ public class Rows implements Result {
         public Rows parse(ByteBuffer buffer) {
             Metadata metadata = Metadata.PARSER.parse(buffer);
             int rowsCount = buffer.getInt();
-            List<Map<String, Object>> rowsContent = new ArrayList<>();
+            List<List<Column>> rowsContent = new ArrayList<>();
             for (int i = 0; i < rowsCount; i++) {
-                Map<String, Object> map = new HashMap<>();
+                List<Column> columns = new ArrayList<>();
                 for (int j = 0, columnCount = metadata.columnsCount; j < columnCount; j++) {
                     Metadata.ColumnSpec columnSpec = metadata.columnSpec.get(j);
                     Object result = columnSpec.columnType.getParser().parse(buffer);
-                    map.put(columnSpec.columnName, result);
+                    columns.add(new Column(columnSpec.columnName, result));
                 }
-                rowsContent.add(map);
+                rowsContent.add(columns);
             }
             return new Rows(metadata, rowsCount, rowsContent);
         }
