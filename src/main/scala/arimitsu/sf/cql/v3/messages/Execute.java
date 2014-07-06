@@ -5,7 +5,9 @@ import arimitsu.sf.cql.v3.Frame;
 import arimitsu.sf.cql.v3.Header;
 import arimitsu.sf.cql.v3.Opcode;
 import arimitsu.sf.cql.v3.Version;
-import arimitsu.sf.cql.v3.util.Notation;
+
+import static arimitsu.sf.cql.v3.util.Notation.join;
+import static arimitsu.sf.cql.v3.util.Notation.short2Bytes;
 
 /**
  * Created by sxend on 14/06/07.
@@ -25,6 +27,7 @@ public class Execute implements Request {
 
     @Override
     public Frame toFrame() {
-        return new Frame(new Header(Version.REQUEST, flags, streamId, Opcode.EXECUTE), Notation.join(id, parameters.toBytes()));
+        byte[] paramBytes = parameters.toBytes();
+        return new Frame(new Header(Version.REQUEST, flags, streamId, Opcode.EXECUTE), join(join(short2Bytes((short) id.length), id), paramBytes));
     }
 }

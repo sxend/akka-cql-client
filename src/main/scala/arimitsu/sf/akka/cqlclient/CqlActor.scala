@@ -44,9 +44,7 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
         val result = streamReference.compareAndSet(streamId, (streamId + 1).toShort)
         if (result) {
           operationMap.put(streamId, message)
-          val bs: ByteString = ByteString(process(streamId))
-          println(bs.toString())
-          connection ! Write(bs)
+          connection ! Write(ByteString(process(streamId)))
         } else {
           self ! message
         }

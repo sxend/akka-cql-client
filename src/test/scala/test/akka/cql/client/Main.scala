@@ -9,8 +9,7 @@ import arimitsu.sf.cql.v3.messages.QueryParameters.ListValues
 import arimitsu.sf.cql.v3.messages.results.Rows
 import arimitsu.sf.cql.v3.Consistency._
 import arimitsu.sf.akka.cqlclient.Configuration
-import scala.util.Success
-import scala.util.Failure
+import scala.util.{Try, Success, Failure}
 import scala.collection.JavaConversions._
 
 /**
@@ -69,8 +68,26 @@ object Main {
                 }
                 val prepareFuture = client.prepare("select * from test_table1 where id = ?")
                 prepareFuture.map{
-
-                  pre => pre.id
+                  pre => {
+                    val rowPrint:Try[Result] => Unit = {
+                      case Success(s) if s.isInstanceOf[Rows] =>
+                        s.asInstanceOf[Rows].rowsContent.foreach {
+                          row => row.foreach {
+                            cols => println(cols.name + " -> " + cols.value)
+                          }
+                        }
+                      case Success(s) => println(s)
+                      case Failure(t) => t.printStackTrace()
+                    }
+                    val listval1 = new ListValues()
+                    listval1.putInt(1)
+                    val param1 = new QueryParameters(LOCAL_ONE, Query.QueryFlags.VALUES.mask, listval1, 1, new Array[Byte](1), ALL, System.currentTimeMillis())
+                    client.execute(pre.id,param1).onComplete(rowPrint)
+                    val listval2 = new ListValues()
+                    listval2.putInt(2)
+                    val param2 = new QueryParameters(LOCAL_ONE, Query.QueryFlags.VALUES.mask, listval2, 1, new Array[Byte](1), ALL, System.currentTimeMillis())
+                    client.execute(pre.id,param2).onComplete(rowPrint)
+                  }
                 }
               case _ =>
             }
