@@ -55,13 +55,10 @@ public interface ColumnType {
                 case MAP:
                     return new MapType(fromBuffer(buffer), fromBuffer(buffer));
                 case CUSTOM:
-                    return null;
                 case UDT:
-                    return null;
                 case TUPLE:
-                    return null;
                 default:
-                    return null;
+                    throw new UnsupportedOperationException("not implementation.");
             }
         }
     }
