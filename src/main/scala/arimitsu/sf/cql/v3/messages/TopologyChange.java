@@ -9,6 +9,10 @@ import java.nio.ByteBuffer;
  * Created by sxend on 14/07/06.
  */
 public class TopologyChange implements Event {
+
+    public final ChangeType changeType;
+    public final InetAddress nodeAddress;
+
     public TopologyChange(ChangeType changeType, InetAddress nodeAddress) {
         this.changeType = changeType;
         this.nodeAddress = nodeAddress;
@@ -19,8 +23,6 @@ public class TopologyChange implements Event {
         REMOVED_NODE,;
     }
 
-    public final ChangeType changeType;
-    public final InetAddress nodeAddress;
 
     @Override
     public EventType getType() {
