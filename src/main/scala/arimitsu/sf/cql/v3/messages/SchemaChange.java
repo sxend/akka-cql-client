@@ -8,12 +8,12 @@ import java.nio.ByteBuffer;
  * Created by sxend on 2014/06/11.
  */
 public class SchemaChange implements Result, Event {
-    public final ChangeType change;
+    public final ChangeType changeType;
     public final String keySpace;
     public final String table;
 
-    public SchemaChange(String change, String keySpace, String table) {
-        this.change = ChangeType.valueOf(change);
+    public SchemaChange(ChangeType changeType, String keySpace, String table) {
+        this.changeType = changeType;
         this.keySpace = keySpace;
         this.table = table;
     }
@@ -35,6 +35,7 @@ public class SchemaChange implements Result, Event {
     }
 
     public static SchemaChange fromBuffer(ByteBuffer buffer) {
-        return new SchemaChange(Notation.getString(buffer), Notation.getString(buffer), Notation.getString(buffer));
+        ChangeType changeType = ChangeType.valueOf(Notation.getString(buffer));
+        return new SchemaChange(changeType, Notation.getString(buffer), Notation.getString(buffer));
     }
 }
