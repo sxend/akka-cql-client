@@ -1,8 +1,5 @@
 package arimitsu.sf.cql.v3.columntype;
 
-import arimitsu.sf.cql.v3.ColumnType;
-import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
-
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;

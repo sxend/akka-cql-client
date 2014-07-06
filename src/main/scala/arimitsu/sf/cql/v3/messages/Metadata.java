@@ -1,6 +1,6 @@
 package arimitsu.sf.cql.v3.messages;
 
-import arimitsu.sf.cql.v3.ColumnType;
+import arimitsu.sf.cql.v3.columntype.ColumnType;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
