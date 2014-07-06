@@ -1,24 +1,24 @@
 package arimitsu.sf.cql.v3.messages;
 
 
-import arimitsu.sf.cql.v3.messages.results.columntype.AsciiType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BigintType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BlobType;
-import arimitsu.sf.cql.v3.messages.results.columntype.BooleanType;
-import arimitsu.sf.cql.v3.messages.results.columntype.CounterType;
-import arimitsu.sf.cql.v3.messages.results.columntype.DecimalType;
-import arimitsu.sf.cql.v3.messages.results.columntype.DoubleType;
-import arimitsu.sf.cql.v3.messages.results.columntype.FloatType;
-import arimitsu.sf.cql.v3.messages.results.columntype.InetType;
-import arimitsu.sf.cql.v3.messages.results.columntype.IntType;
-import arimitsu.sf.cql.v3.messages.results.columntype.ListType;
-import arimitsu.sf.cql.v3.messages.results.columntype.MapType;
-import arimitsu.sf.cql.v3.messages.results.columntype.SetType;
-import arimitsu.sf.cql.v3.messages.results.columntype.TimestampType;
-import arimitsu.sf.cql.v3.messages.results.columntype.TimeuuidType;
-import arimitsu.sf.cql.v3.messages.results.columntype.UuidType;
-import arimitsu.sf.cql.v3.messages.results.columntype.VarcharType;
-import arimitsu.sf.cql.v3.messages.results.columntype.VarintType;
+import arimitsu.sf.cql.v3.columntype.AsciiType;
+import arimitsu.sf.cql.v3.columntype.BigintType;
+import arimitsu.sf.cql.v3.columntype.BlobType;
+import arimitsu.sf.cql.v3.columntype.BooleanType;
+import arimitsu.sf.cql.v3.columntype.CounterType;
+import arimitsu.sf.cql.v3.columntype.DecimalType;
+import arimitsu.sf.cql.v3.columntype.DoubleType;
+import arimitsu.sf.cql.v3.columntype.FloatType;
+import arimitsu.sf.cql.v3.columntype.InetType;
+import arimitsu.sf.cql.v3.columntype.IntType;
+import arimitsu.sf.cql.v3.columntype.ListType;
+import arimitsu.sf.cql.v3.columntype.MapType;
+import arimitsu.sf.cql.v3.columntype.SetType;
+import arimitsu.sf.cql.v3.columntype.TimestampType;
+import arimitsu.sf.cql.v3.columntype.TimeuuidType;
+import arimitsu.sf.cql.v3.columntype.UuidType;
+import arimitsu.sf.cql.v3.columntype.VarcharType;
+import arimitsu.sf.cql.v3.columntype.VarintType;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;

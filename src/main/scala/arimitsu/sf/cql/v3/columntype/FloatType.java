@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3.messages.results.columntype;
+package arimitsu.sf.cql.v3.columntype;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
@@ -6,18 +6,18 @@ import arimitsu.sf.cql.v3.messages.Parser;
 
 import java.nio.ByteBuffer;
 
-public class DoubleType implements ColumnType {
-    private static final Parser<Double> PARSER = new Parser<Double>() {
+public class FloatType implements ColumnType {
+    private static final Parser<Float> PARSER = new Parser<Float>() {
         @Override
-        public Double parse(ByteBuffer buffer) {
+        public Float parse(ByteBuffer buffer) {
             int length = buffer.getInt();
-            return buffer.getDouble();
+            return buffer.getFloat();
         }
     };
 
     @Override
     public short getId() {
-        return ColumnTypeEnum.DOUBLE.id;
+        return ColumnTypeEnum.FLOAT.id;
     }
 
     @Override

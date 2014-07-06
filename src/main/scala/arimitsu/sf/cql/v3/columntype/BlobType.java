@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3.messages.results.columntype;
+package arimitsu.sf.cql.v3.columntype;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
@@ -7,17 +7,18 @@ import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
 
-public class VarcharType implements ColumnType {
-    private static final Parser<String> PARSER = new Parser<String>() {
+public class BlobType implements ColumnType {
+    private static final Parser<byte[]> PARSER = new Parser<byte[]>() {
         @Override
-        public String parse(ByteBuffer buffer) {
-            return Notation.getString(buffer, buffer.getInt());
+        public byte[] parse(ByteBuffer buffer) {
+            int length = buffer.getInt();
+            return Notation.getBytes(buffer, length);
         }
     };
 
     @Override
     public short getId() {
-        return ColumnTypeEnum.VARCHAR.id;
+        return ColumnTypeEnum.BLOB.id;
     }
 
     @Override

@@ -1,24 +1,25 @@
-package arimitsu.sf.cql.v3.messages.results.columntype;
+package arimitsu.sf.cql.v3.columntype;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
 import arimitsu.sf.cql.v3.messages.Parser;
-import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
+import java.util.Date;
 
-public class BlobType implements ColumnType {
-    private static final Parser<byte[]> PARSER = new Parser<byte[]>() {
+public class TimestampType implements ColumnType {
+    private static final Parser<Date> PARSER = new Parser<Date>() {
         @Override
-        public byte[] parse(ByteBuffer buffer) {
+        public Date parse(ByteBuffer buffer) {
             int length = buffer.getInt();
-            return Notation.getBytes(buffer, length);
+            long time = buffer.getLong() * 1000;
+            return new Date(time);
         }
     };
 
     @Override
     public short getId() {
-        return ColumnTypeEnum.BLOB.id;
+        return ColumnTypeEnum.TIMESTAMP.id;
     }
 
     @Override

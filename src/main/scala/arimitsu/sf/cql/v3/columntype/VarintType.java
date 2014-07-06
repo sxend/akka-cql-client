@@ -1,26 +1,26 @@
-package arimitsu.sf.cql.v3.messages.results.columntype;
+package arimitsu.sf.cql.v3.columntype;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
 import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.util.Notation;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
-import java.util.UUID;
 
-public class TimeuuidType implements ColumnType {
-    private static final Parser<UUID> PARSER = new Parser<UUID>() {
+public class VarintType implements ColumnType {
+    private static final Parser<BigDecimal> PARSER = new Parser<BigDecimal>() {
         @Override
-        public UUID parse(ByteBuffer buffer) {
+        public BigDecimal parse(ByteBuffer buffer) {
             int length = buffer.getInt(); // length 4
             byte[] bytes = Notation.getBytes(buffer, length);
-            return Notation.toUUID(bytes);
+            return BigDecimal.valueOf(Notation.getLong(bytes));
         }
     };
 
     @Override
     public short getId() {
-        return ColumnTypeEnum.TIMEUUID.id;
+        return ColumnTypeEnum.VARINT.id;
     }
 
     @Override

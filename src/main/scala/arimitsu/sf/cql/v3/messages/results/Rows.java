@@ -1,6 +1,7 @@
 package arimitsu.sf.cql.v3.messages.results;
 
 
+import arimitsu.sf.cql.v3.Column;
 import arimitsu.sf.cql.v3.messages.Metadata;
 import arimitsu.sf.cql.v3.messages.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
