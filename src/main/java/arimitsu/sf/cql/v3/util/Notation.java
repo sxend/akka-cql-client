@@ -59,7 +59,7 @@ public class Notation {
         return UUID.nameUUIDFromBytes(bytes);
     }
 
-    private static final Constructor<UUID> uuidConstructor;
+    private static final Constructor<UUID> UUID_CONSTRUCTOR;
 
     static {
         Constructor<UUID> c = null;
@@ -68,12 +68,12 @@ public class Notation {
             c.setAccessible(true);
         } catch (NoSuchMethodException e) {
         }
-        uuidConstructor = c;
+        UUID_CONSTRUCTOR = c;
     }
 
     public static UUID toUUID(byte[] bytes) {
         try {
-            return uuidConstructor.newInstance(bytes);
+            return UUID_CONSTRUCTOR.newInstance(bytes);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
