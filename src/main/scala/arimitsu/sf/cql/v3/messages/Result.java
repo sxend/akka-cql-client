@@ -1,5 +1,6 @@
 package arimitsu.sf.cql.v3.messages;
 
+import arimitsu.sf.cql.v3.Parser;
 import arimitsu.sf.cql.v3.messages.results.Prepared;
 import arimitsu.sf.cql.v3.messages.results.Rows;
 import arimitsu.sf.cql.v3.messages.results.SchemaChange;

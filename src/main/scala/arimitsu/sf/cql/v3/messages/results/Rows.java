@@ -2,9 +2,11 @@ package arimitsu.sf.cql.v3.messages.results;
 
 
 import arimitsu.sf.cql.v3.Column;
+import arimitsu.sf.cql.v3.messages.ColumnSpec;
 import arimitsu.sf.cql.v3.messages.Metadata;
-import arimitsu.sf.cql.v3.messages.Parser;
+import arimitsu.sf.cql.v3.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
+import arimitsu.sf.cql.v3.messages.parser.MetadataParser;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -33,13 +35,13 @@ public class Rows implements Result {
     public static final Parser<Rows> PARSER = new Parser<Rows>() {
         @Override
         public Rows parse(ByteBuffer buffer) {
-            Metadata metadata = Metadata.PARSER.parse(buffer);
+            Metadata metadata = MetadataParser.INSTANCE.parse(buffer);
             int rowsCount = buffer.getInt();
             List<List<Column>> rowsContent = new ArrayList<>();
             for (int i = 0; i < rowsCount; i++) {
                 List<Column> columns = new ArrayList<>();
                 for (int j = 0, columnCount = metadata.columnsCount; j < columnCount; j++) {
-                    Metadata.ColumnSpec columnSpec = metadata.columnSpec.get(j);
+                    ColumnSpec columnSpec = metadata.columnSpec.get(j);
                     Object result = columnSpec.columnType.getParser().parse(buffer);
                     columns.add(new Column(columnSpec.columnName, result));
                 }

@@ -19,6 +19,7 @@ import arimitsu.sf.akka.cqlclient.message.Batch
 import arimitsu.sf.akka.cqlclient.message.Query
 import arimitsu.sf.akka.cqlclient.message.Register
 import scala.collection.JavaConversions._
+import arimitsu.sf.cql.v3.messages.parser.ErrorParser
 
 /**
  * Created by sxend on 2014/06/06.
@@ -93,7 +94,7 @@ class CqlActor(nodeConfig: NodeConfiguration, eventHandler: EventHandler) extend
           import Opcode._
           frame.header.opcode match {
             case ERROR =>
-              val e = arimitsu.sf.cql.v3.messages.Error.PARSER.parse(ByteBuffer.wrap(frame.body))
+              val e = ErrorParser.INSTANCE.parse(ByteBuffer.wrap(frame.body))
               val op = operationMap.remove(frame.header.streamId)
               op match {
                 case Some(s) => s.error(e)

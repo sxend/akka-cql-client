@@ -2,7 +2,7 @@ package arimitsu.sf.cql.v3.columntype;
 
 import arimitsu.sf.cql.v3.messages.ColumnType;
 import arimitsu.sf.cql.v3.messages.ColumnTypeEnum;
-import arimitsu.sf.cql.v3.messages.Parser;
+import arimitsu.sf.cql.v3.Parser;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

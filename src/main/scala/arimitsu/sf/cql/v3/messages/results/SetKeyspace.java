@@ -1,6 +1,6 @@
 package arimitsu.sf.cql.v3.messages.results;
 
-import arimitsu.sf.cql.v3.messages.Parser;
+import arimitsu.sf.cql.v3.Parser;
 import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
 

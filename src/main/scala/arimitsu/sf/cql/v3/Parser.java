@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3.messages;
+package arimitsu.sf.cql.v3;
 
 import java.nio.ByteBuffer;
 
