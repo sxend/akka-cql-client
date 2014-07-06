@@ -16,8 +16,8 @@ public class TimeuuidType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.TIMEUUID.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.TIMEUUID;
     }
 
     @Override

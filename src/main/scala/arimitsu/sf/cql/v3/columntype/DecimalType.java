@@ -18,8 +18,8 @@ public class DecimalType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.DECIMAL.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.DECIMAL;
     }
 
     @Override

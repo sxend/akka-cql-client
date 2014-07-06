@@ -27,8 +27,8 @@ public class ListType implements ColumnType {
     }
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.LIST.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.LIST;
     }
 
     @Override

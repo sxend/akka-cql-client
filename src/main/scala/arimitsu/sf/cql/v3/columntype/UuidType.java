@@ -16,8 +16,8 @@ public class UuidType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.UUID.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.UUID;
     }
 
     @Override

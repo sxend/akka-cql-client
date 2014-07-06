@@ -27,8 +27,8 @@ public class SetType implements ColumnType {
     }
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.SET.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.SET;
     }
 
     @Override

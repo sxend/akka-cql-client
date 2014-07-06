@@ -9,13 +9,14 @@ import java.nio.ByteBuffer;
  * Created by sxend on 14/06/14.
  */
 public interface ColumnType {
-    short getId();
+    ColumnTypeEnum getEnum();
 
     Parser<?> getParser();
 
     public static class Factory {
         public static ColumnType fromBuffer(ByteBuffer buffer) {
-            ColumnTypeEnum typeEnum = ColumnTypeEnum.valueOf(Notation.getShort(buffer));
+            short id = Notation.getShort(buffer);
+            ColumnTypeEnum typeEnum = ColumnTypeEnum.valueOf(id);
             switch (typeEnum) {
                 case ASCII:
                     return new AsciiType();

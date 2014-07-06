@@ -2,8 +2,8 @@ package arimitsu.sf.cql.v3.columntype;
 
 public class CounterType implements ColumnType {
     @Override
-    public short getId() {
-        return ColumnTypeEnum.COUNTER.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.COUNTER;
     }
 
     @Override

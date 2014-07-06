@@ -12,8 +12,8 @@ public class DoubleType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.DOUBLE.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.DOUBLE;
     }
 
     @Override

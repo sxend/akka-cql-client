@@ -11,6 +11,6 @@ class EventHandler(config: Configuration)(implicit actorSystem: ActorSystem) {
   type Handle = PartialFunction[Event, Unit]
 
   def handle: Handle = {
-    case schemaChange:SchemaChange =>
+    case schemaChange: SchemaChange =>
   }
 }

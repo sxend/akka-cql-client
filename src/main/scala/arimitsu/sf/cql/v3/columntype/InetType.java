@@ -15,8 +15,8 @@ public class InetType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.INET.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.INET;
     }
 
     @Override

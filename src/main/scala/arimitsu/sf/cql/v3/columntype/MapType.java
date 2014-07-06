@@ -31,8 +31,8 @@ public class MapType implements ColumnType {
     }
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.MAP.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.MAP;
     }
 
     @Override

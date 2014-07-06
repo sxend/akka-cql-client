@@ -12,8 +12,8 @@ public class IntType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.INT.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.INT;
     }
 
     @Override

@@ -16,8 +16,8 @@ public class AsciiType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.ASCII.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.ASCII;
     }
 
     @Override

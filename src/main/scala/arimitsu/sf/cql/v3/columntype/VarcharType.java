@@ -13,8 +13,8 @@ public class VarcharType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.VARCHAR.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.VARCHAR;
     }
 
     @Override

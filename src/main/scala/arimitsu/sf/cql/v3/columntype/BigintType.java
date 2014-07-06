@@ -12,8 +12,8 @@ public class BigintType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.BIGINT.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.BIGINT;
     }
 
     @Override

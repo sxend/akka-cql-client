@@ -16,8 +16,8 @@ public class VarintType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.VARINT.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.VARINT;
     }
 
     @Override

@@ -14,8 +14,8 @@ public class BlobType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.BLOB.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.BLOB;
     }
 
     @Override

@@ -14,8 +14,8 @@ public class TimestampType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.TIMESTAMP.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.TIMESTAMP;
     }
 
     @Override

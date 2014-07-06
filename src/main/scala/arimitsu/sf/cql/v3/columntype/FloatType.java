@@ -12,8 +12,8 @@ public class FloatType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.FLOAT.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.FLOAT;
     }
 
     @Override

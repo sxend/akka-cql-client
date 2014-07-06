@@ -12,8 +12,8 @@ public class BooleanType implements ColumnType {
     };
 
     @Override
-    public short getId() {
-        return ColumnTypeEnum.BOOLEAN.id;
+    public ColumnTypeEnum getEnum() {
+        return ColumnTypeEnum.BOOLEAN;
     }
 
     @Override
