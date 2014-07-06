@@ -2,7 +2,6 @@ package arimitsu.sf.akka.cqlclient
 
 import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.concurrent.{Promise, Future}
-import arimitsu.sf.cql.v3.messages.results.Prepared
 import arimitsu.sf.akka.cqlclient.message._
 import arimitsu.sf.cql.v3.messages._
 import arimitsu.sf.akka.cqlclient.message.AuthResponse

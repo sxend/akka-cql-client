@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
  */
 case class Register(events: List[String], promise: Promise[Ready]) extends Message(promise) {
   override def process(frame: Frame): Unit = {
-    val ready = Ready.ReadyParser.parse(ByteBuffer.wrap(frame.body))
+    val ready = Ready.fromBuffer(ByteBuffer.wrap(frame.body))
     promise.success(ready)
   }
 }

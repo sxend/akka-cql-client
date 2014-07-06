@@ -1,5 +1,9 @@
 package arimitsu.sf.cql.v3.messages;
 
+import arimitsu.sf.cql.v3.util.Notation;
+
+import java.nio.ByteBuffer;
+
 /**
  * Created by sxend on 14/06/07.
  */
@@ -10,4 +14,7 @@ public class Authenticate {
         this.className = className;
     }
 
+    public static Authenticate fromBuffer(ByteBuffer buffer) {
+        return new Authenticate(Notation.getString(buffer));
+    }
 }

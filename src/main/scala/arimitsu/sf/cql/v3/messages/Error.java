@@ -1,6 +1,5 @@
 package arimitsu.sf.cql.v3.messages;
 
-import arimitsu.sf.cql.v3.Parser;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
@@ -22,4 +21,7 @@ public class Error {
         return new RuntimeException(this.code + " : " + this.message);
     }
 
+    public static Error fromBuffer(ByteBuffer buffer) {
+        return new Error(ErrorCodes.valueOf(buffer.getInt()), Notation.getString(buffer));
+    }
 }

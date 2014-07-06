@@ -4,9 +4,8 @@ import akka.actor.ActorSystem
 import java.net.InetSocketAddress
 import arimitsu.sf.akka.cqlclient.Cluster
 import arimitsu.sf.cql.v3.{Compression, Flags}
-import arimitsu.sf.cql.v3.messages.{Result, Query, QueryParameters}
+import arimitsu.sf.cql.v3.messages.{Rows, Result, Query, QueryParameters}
 import arimitsu.sf.cql.v3.messages.QueryParameters.ListValues
-import arimitsu.sf.cql.v3.messages.results.Rows
 import arimitsu.sf.cql.v3.Consistency._
 import arimitsu.sf.akka.cqlclient.Configuration
 import scala.util.{Try, Success, Failure}

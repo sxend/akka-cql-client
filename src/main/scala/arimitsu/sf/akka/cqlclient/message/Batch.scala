@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
  */
 case class Batch(promise: Promise[Result]) extends Message(promise) {
   override def process(frame: Frame): Unit = {
-    val result = Result.PARSER.parse(ByteBuffer.wrap(frame.body))
+    val result = Result.Factory.fromBuffer(ByteBuffer.wrap(frame.body))
     promise.success(result)
   }
 }

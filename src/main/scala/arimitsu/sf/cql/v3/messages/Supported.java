@@ -1,7 +1,6 @@
 package arimitsu.sf.cql.v3.messages;
 
 
-import arimitsu.sf.cql.v3.Parser;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
@@ -22,5 +21,8 @@ public class Supported {
         this.stringMultiMap = stringMultiMap;
     }
 
+    public static Supported fromBuffer(ByteBuffer buffer) {
+        return new Supported(Notation.getStringMultiMap(buffer));
+    }
 }
 

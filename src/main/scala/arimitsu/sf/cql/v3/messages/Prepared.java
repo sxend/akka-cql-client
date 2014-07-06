@@ -1,9 +1,5 @@
-package arimitsu.sf.cql.v3.messages.results;
+package arimitsu.sf.cql.v3.messages;
 
-import arimitsu.sf.cql.v3.Parser;
-import arimitsu.sf.cql.v3.messages.Metadata;
-import arimitsu.sf.cql.v3.messages.Result;
-import arimitsu.sf.cql.v3.messages.parser.MetadataParser;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
@@ -28,10 +24,7 @@ public class Prepared implements Result {
         return Kind.PREPARED;
     }
 
-    public static final Parser<Prepared> PARSER = new Parser<Prepared>() {
-        @Override
-        public Prepared parse(ByteBuffer buffer) {
-            return new Prepared(Notation.getShortBytes(buffer), MetadataParser.INSTANCE.parse(buffer), MetadataParser.INSTANCE.parse(buffer));
-        }
-    };
+    public static Prepared fromBuffer(ByteBuffer buffer) {
+        return new Prepared(Notation.getShortBytes(buffer), Metadata.fromBuffer(buffer), Metadata.fromBuffer(buffer));
+    }
 }

@@ -1,4 +1,4 @@
-package arimitsu.sf.cql.v3;
+package arimitsu.sf.cql.v3.columntype;
 
 import java.nio.ByteBuffer;
 

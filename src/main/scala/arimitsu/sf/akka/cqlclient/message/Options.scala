@@ -4,7 +4,6 @@ import scala.concurrent.Promise
 import arimitsu.sf.cql.v3.Frame
 import arimitsu.sf.cql.v3.messages.Supported
 import java.nio.ByteBuffer
-import arimitsu.sf.cql.v3.messages.parser.SupportedParser
 
 /**
  * Created by sxend on 2014/06/06.
@@ -12,7 +11,7 @@ import arimitsu.sf.cql.v3.messages.parser.SupportedParser
 
 case class Options(promise: Promise[Supported]) extends Message(promise) {
   def process(frame: Frame) = {
-    val s = SupportedParser.INSTANCE.parse(ByteBuffer.wrap(frame.body))
+    val s = Supported.fromBuffer(ByteBuffer.wrap(frame.body))
     promise.success(s)
   }
 

@@ -1,5 +1,7 @@
 package arimitsu.sf.cql.v3.messages;
 
+import arimitsu.sf.cql.v3.ColumnType;
+
 /**
  * Created by sxend on 14/07/06.
  */

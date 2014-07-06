@@ -1,7 +1,5 @@
-package arimitsu.sf.cql.v3.messages.results;
+package arimitsu.sf.cql.v3.messages;
 
-import arimitsu.sf.cql.v3.Parser;
-import arimitsu.sf.cql.v3.messages.Result;
 import arimitsu.sf.cql.v3.util.Notation;
 
 import java.nio.ByteBuffer;
@@ -9,7 +7,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by sxend on 2014/06/11.
  */
-public class SchemaChange implements Result {
+public class SchemaChange implements Result, Event {
     public final ChangeType change;
     public final String keySpace;
     public final String table;
@@ -18,6 +16,11 @@ public class SchemaChange implements Result {
         this.change = ChangeType.valueOf(change);
         this.keySpace = keySpace;
         this.table = table;
+    }
+
+    @Override
+    public EventType getType() {
+        return EventType.SCHEMA_CHANGE;
     }
 
     public static enum ChangeType {
@@ -31,10 +34,7 @@ public class SchemaChange implements Result {
         return Kind.SCHEMA_CHANGE;
     }
 
-    public static final Parser<SchemaChange> PARSER = new Parser<SchemaChange>() {
-        @Override
-        public SchemaChange parse(ByteBuffer buffer) {
-            return new SchemaChange(Notation.getString(buffer), Notation.getString(buffer), Notation.getString(buffer));
-        }
-    };
+    public static SchemaChange fromBuffer(ByteBuffer buffer) {
+        return new SchemaChange(Notation.getString(buffer), Notation.getString(buffer), Notation.getString(buffer));
+    }
 }
