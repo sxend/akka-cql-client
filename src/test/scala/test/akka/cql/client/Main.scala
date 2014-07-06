@@ -66,7 +66,7 @@ object Main {
                     cols => println(cols.name + " -> " + cols.value)
                   }
                 }
-                val prepareFuture = client.prepare("select * from test_table1 where id = ?")
+                val prepareFuture = client.prepare("select list_column from test_table1 where id = ?")
                 prepareFuture.map {
                   pre => {
                     def resultPrint(result: Result) = {
@@ -83,10 +83,18 @@ object Main {
                     }
                     val listval1 = new ListValues()
                     listval1.putInt(1)
-                    val param1 = new QueryParameters(LOCAL_ONE, Query.QueryFlags.VALUES.mask, listval1, 1, new Array[Byte](1), ALL, System.currentTimeMillis())
+                    val builder = new QueryParameters.Builder()
+                    builder
+                      .setConsistency(LOCAL_ONE)
+                      .setFlags(Query.QueryFlags.VALUES.mask)
+                      .setResultPageSize(1)
+                      .setPagingState(new Array[Byte](1))
+                      .setSerialConsistency(ALL)
+                      .setTimestamp(System.currentTimeMillis())
+                    val param1 = builder.setValues(listval1).build()
                     val listval2 = new ListValues()
                     listval2.putInt(2)
-                    val param2 = new QueryParameters(LOCAL_ONE, Query.QueryFlags.VALUES.mask, listval2, 1, new Array[Byte](1), ALL, System.currentTimeMillis())
+                    val param2 = builder.setValues(listval2).build()
                     val result = for {
                       result1 <- client.execute(pre.id, param1)
                       result2 <- client.execute(pre.id, param2)
@@ -101,8 +109,6 @@ object Main {
             }
           case Failure(t) => t.printStackTrace()
         }
-
     }
   }
 }
-

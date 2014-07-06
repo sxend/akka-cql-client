@@ -93,4 +93,53 @@ public class QueryParameters {
             return result;
         }
     }
+
+    public static class Builder {
+        private Consistency consistency;
+        private byte flags;
+        private Values values;
+        private int resultPageSize;
+        private byte[] pagingState;
+        private Consistency serialConsistency;
+        private long timestamp;
+
+        public Builder setConsistency(Consistency consistency) {
+            this.consistency = consistency;
+            return this;
+        }
+
+        public Builder setFlags(byte flags) {
+            this.flags = flags;
+            return this;
+        }
+
+        public Builder setValues(Values values) {
+            this.values = values;
+            return this;
+        }
+
+        public Builder setResultPageSize(int resultPageSize) {
+            this.resultPageSize = resultPageSize;
+            return this;
+        }
+
+        public Builder setPagingState(byte[] pagingState) {
+            this.pagingState = pagingState;
+            return this;
+        }
+
+        public Builder setSerialConsistency(Consistency serialConsistency) {
+            this.serialConsistency = serialConsistency;
+            return this;
+        }
+
+        public Builder setTimestamp(long timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        public QueryParameters build() {
+            return new QueryParameters(consistency, flags, values, resultPageSize, pagingState, serialConsistency, timestamp);
+        }
+    }
 }
